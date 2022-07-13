@@ -23,7 +23,7 @@ func (g *_gorm)Config() *gorm.Config  {
 	config := &gorm.Config{
 		DisableForeignKeyConstraintWhenMigrating: false,		//自动迁移时，禁用外键约束,不禁用
 		NamingStrategy: schema.NamingStrategy{
-			SingularTable: false,
+			SingularTable: true,
 		},
 	}
 	_default := logger.New(NewWriter(log.New(os.Stdout, "\r\n", log.LstdFlags)), logger.Config{
