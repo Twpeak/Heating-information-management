@@ -12,5 +12,3 @@ type JwtBlacklist struct {
 func (*JwtBlacklist) TableName() string {
 	return "jwt_blacklist"
 }
-
-

@@ -6,12 +6,13 @@ import (
 
 var (
 	casbinService = service.ServiceGroupApp.SystemServiceGroup.CasbinService
-	userService = service.ServiceGroupApp.SystemServiceGroup.UserService
+	userService   = service.ServiceGroupApp.SystemServiceGroup.UserService
 )
 
-func InitBaseMysqlDate()  {
+func InitBaseMysqlDate() {
 	//Cabin鉴权数据初始化
 	casbinService.InitCasbin()
 	//角色和管理员数据初始化
 	userService.InitUserRole()
+
 }
