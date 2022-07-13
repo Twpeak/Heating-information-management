@@ -5,6 +5,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system/response"
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 type HospitalService struct {}
@@ -50,7 +51,33 @@ func (h *HospitalService)GetHospitalsVo()(voDate []response.HospitalVo,err error
 	return voDate,err
 }
 
+//查询当前医院所有医生
+func (h *HospitalService)GetUserByHospitalId(HospitalId string)(users []system.SysUser,err error)  {
+	if err = global.G_DB.Model(system.SysUser{}).Where("HospitalId = ?",HospitalId).Find(&users).Error; err != nil{
+		global.G_LOG.Error("链表查询医院信息VO数据失败",zap.Error(err))
+		return users,err
+	}
+	return users,err
+}
 
+//删除医院信息
+func (h *HospitalService)DelHospital(HospitalId string)(err error)  {
+	if err = global.G_DB.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(system.Hospital{}).Where("id = ?", HospitalId).Delete(system.Hospital{}).Error; err != nil {
+			global.G_LOG.Error("删除医院数据失败",zap.Error(err))
+			return err
+		}
+		if err := tx.Model(system.SysUser{}).Where("hospital_id = ?",HospitalId).Delete(system.Hospital{}).Error;err != nil {
+			global.G_LOG.Error("删除医院中医生数据失败",zap.Error(err))
+			return err
+		}
+		return nil
+	});err != nil {
+		global.G_LOG.Error("删除医院事务出现错误，数据回滚",zap.Error(err))
+		return err
+	}
+	return err
+}
 
 
 

@@ -8,13 +8,7 @@ package utils
 var(
 	LoginVerify            = Rules{"Username": {NotEmpty()}, "Password": {NotEmpty()},"Captcha": {NotEmpty()},"CaptchaId": {NotEmpty()}}
 	RegisterVerify         = Rules{"Username": {NotEmpty()}, "Name": {NotEmpty()}, "Password": {NotEmpty()}, "AuthorityId": {NotEmpty()}}
-	//AddArticleVerify	   = Rules{"UserId":{NotEmpty()},"Title":{NotEmpty()},"SortId":{NotEmpty()}}
-	AddArticleVerify	   = Rules{"UserId":{NotEmpty()},"Title":{NotEmpty()},"SortId":{NotEmpty()},"Labels":{NotEmpty()}}
-	LabelVerify			   = Rules{"LabelName":{NotEmpty()}}
 	PageInfoVerify         = Rules{"Page": {NotEmpty(),Gt("0")}, "PageSize": {NotEmpty(),Gt("0")}}
-	UpdateArticleVerify    = Rules{"Id":{NotEmpty()},"UserId":{NotEmpty()},"Title":{NotEmpty()},"SortId":{NotEmpty()},"Labels":{NotEmpty()}}
-	LikeVerify		   	   = Rules{"Id":{NotEmpty()},"UserId":{NotEmpty()}}
-	AddSortVerify		   = Rules{"SortName":{NotEmpty()}}
-	UpdateSortVerify	   = Rules{"ArticleId":{NotEmpty()},"Id":{NotEmpty()}}
+	HospitalIdVerify	   = Rules{"HospitalId":{NotEmpty()}}
 )
 
