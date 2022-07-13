@@ -6,6 +6,7 @@ import (
 	gormadapter "github.com/casbin/gorm-adapter/v3"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system/request"
+	"go.uber.org/zap"
 	"sync"
 )
 
@@ -35,7 +36,11 @@ func (casbinService *CasbinService) Casbin() *casbin.SyncedEnforcer {
 	once.Do(func() {											//保证线程安全
 		syncedEnforcer, _ = casbin.NewSyncedEnforcer(global.G_CONFIG.Casbin.ModelPath,adapter)	////获取一个工具对象，载入配置文件,这里载入了配适器，所以可以在数据库中调用策略(权限表)
 	})
-	_ = syncedEnforcer.LoadPolicy()		//加载策略
+	err := syncedEnforcer.LoadPolicy()		//加载策略
+	if err != nil {
+		global.G_LOG.Error("加载鉴权策略失败",zap.Error(err))
+		return nil
+	}
 	return syncedEnforcer
 }
 

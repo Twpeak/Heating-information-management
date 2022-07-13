@@ -39,7 +39,7 @@ func main() {
 	Router := initialize.Routers()
 
 	//加载静态资源
-	//Router.Static("/", "./resource/Static/index.html")
+	//Router.Static("/", "./server/resource/Static/index.html")
 	//启动服务
 	Router.Run(":8888")
 

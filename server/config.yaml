@@ -1,10 +1,10 @@
 mysql:
-  path: '127.0.0.1'
-  port: '3306'
+  path: '47.95.13.13'
+  port: '3307'
   config: 'charset=utf8mb4&parseTime=True&loc=Local'
-  db-name: 'db_golang'
+  db-name: 'db_fever_information'
   username: 'root'
-  password: '56994902'
+  password: 'whp666946.'
   max-idle-conns: 10
   max-open-conns: 100
   log-mode: ""
@@ -35,7 +35,7 @@ casbin:
   model-path: './resource/rbac_model.conf'
 
 #system:
-#  ip2location_path: './IP2LOCATION-LITE-DB5.IPV6.BIN'
+#  ip2location_path: './server/IP2LOCATION-LITE-DB5.IPV6.BIN'
 #  page_size: '5'
 
 system:
@@ -47,9 +47,9 @@ system:
 
 local:
   path: /StoreFile
-  store-path: ./resource/StoreFile
+  store-path: ./server/resource/StoreFile
   static: /static
-  static-path: ./resource/Static
+  static-path: ./server/resource/Static
 
 timer:
   start: true
@@ -87,4 +87,4 @@ captcha:
   language: [ "en","ja","ru","zh" ]
 
 excel:
-  dir: ./resource/excel/
+  dir: ./server/resource/excel/
