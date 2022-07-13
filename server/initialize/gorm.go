@@ -30,8 +30,7 @@ func RegisterTables(db *gorm.DB) {
  	err := db.AutoMigrate(
 		//model
 		//gorm当创建从表时，默认会创建依赖的主表,多对多关系的表，不能自动创建。
-
-		//初始化最新的表
+		system.FeverInfo{},
 
 		//时间管理任务的表
 		system.JwtBlacklist{},

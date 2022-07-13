@@ -1,12 +1,12 @@
 package system
 
 import (
+	"fmt"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
 	systemReq "github.com/flipped-aurora/gin-vue-admin/server/model/system/request"
 	systemRes "github.com/flipped-aurora/gin-vue-admin/server/model/system/response"
-	"fmt"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
@@ -74,7 +74,7 @@ func (l *BaseApi)tokenNext(c *gin.Context,user system.SysUser)  {
 	claims := j.CreateClaims(systemReq.BaseClaims{
 		UUID:        user.UUID,
 		ID:          user.ID,
-		NickName:    user.NickName,
+		Name:    user.Name,
 		Username:    user.Username,
 		RoleId: 	 user.RoleId,
 	})
@@ -146,7 +146,7 @@ func (b *BaseApi) Register(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	user := &system.SysUser{Username: r.Username, NickName: r.NickName, Password: r.Password,  RoleId: r.RoleId}
+	user := &system.SysUser{Username: r.Username, Name: r.Name, Password: r.Password,  RoleId: r.RoleId}
 	//user := &system.SysUser{Username: r.Username, NickName: r.NickName, Password: r.Password, HeaderImg: r.HeaderImg, RoleId: r.RoleId}
 	userReturn, err := userService.Register(*user)
 	if err != nil {

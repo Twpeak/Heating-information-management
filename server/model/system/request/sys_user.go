@@ -6,11 +6,11 @@ package request
 
 // Register 用户注册结构
 type Register struct {
-	Username     string   `json:"userName"`
-	Password     string   `json:"passWord"`
-	NickName     string   `json:"nickName"   gorm:"default:'TwpeakUser'"`
-	HeaderImg    string   `json:"headerImg" gorm:"default:'https://qmplusimg.henrongyi.top/gva_header.jpg'"`
-	RoleId  	 uint   `json:"roleId"    gorm:"default:2"`
+	Username     string   	`json:"userName"`
+	Password     string   	`json:"passWord"`
+	Name     	 string   	`json:"name" `
+	HeaderImg    string   	`json:"headerImg" gorm:"default:'https://qmplusimg.henrongyi.top/gva_header.jpg'"`
+	RoleId  	 uint   	`json:"roleId"    gorm:"default:2"`
 }
 
 // Login 用户登录结构

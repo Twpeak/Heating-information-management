@@ -22,6 +22,6 @@ type BaseClaims struct {
 	UUID        uuid.UUID		//用户uuid
 	ID          uint			//用户id
 	Username    string			//用户名
-	NickName    string			//用户昵称
+	Name   	    string				//真实姓名
 	RoleId		uint			//角色id
 }

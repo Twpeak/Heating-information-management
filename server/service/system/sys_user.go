@@ -59,18 +59,56 @@ func (userService *UserService)InitUserRole()  {
 	udb := global.G_DB.Model(&system.SysUser{})
 	RoleDate := []system.SysRole{
 		//....角色信息初始化数据
+		{
+			Id: 1,
+			RoleName: "系统管理员",
+		},
+		{
+			Id: 2,
+			RoleName: "县区管理员",
+		},
+		{
+			Id: 3,
+			RoleName: "医院管理员",
+		},
+		{
+			Id: 4,
+			RoleName: "医生",
+		},
 	}
 	UserDate := []system.SysUser{
 		{
-			Username: "Twpeak",
-			Password: "123456",
-			RoleId: 0,
-			NickName: "开发者(超级管理员)",
-		}, {
 			Username: "admin",
 			Password: "123456",
 			RoleId: 1,
-			NickName: "管理员",
+			Name: "系统管理员",
+			IdentityCard:"410703900003074014",
+			Phone: "15516575533",
+			HospitalId: 1,
+		}, {
+			Username: "dis_admin",
+			Password: "123456",
+			RoleId: 2,
+			Name: "县区管理员",
+			IdentityCard:"410703900003074014",
+			Phone: "15516575533",
+			HospitalId: 1,
+		},{
+			Username: "hos_admin",
+			Password: "123456",
+			RoleId: 3,
+			Name: "医院管理员",
+			IdentityCard:"410703900003074014",
+			Phone: "15516575533",
+			HospitalId: 1,
+		},{
+			Username: "docter",
+			Password: "123456",
+			RoleId: 4,
+			Name: "医生",
+			IdentityCard:"410703900003074014",
+			Phone: "15516575533",
+			HospitalId: 1,
 		},
 
 	}

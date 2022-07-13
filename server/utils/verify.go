@@ -7,7 +7,7 @@ package utils
 
 var(
 	LoginVerify            = Rules{"Username": {NotEmpty()}, "Password": {NotEmpty()},"Captcha": {NotEmpty()},"CaptchaId": {NotEmpty()}}
-	RegisterVerify         = Rules{"Username": {NotEmpty()}, "NickName": {NotEmpty()}, "Password": {NotEmpty()}, "AuthorityId": {NotEmpty()}}
+	RegisterVerify         = Rules{"Username": {NotEmpty()}, "Name": {NotEmpty()}, "Password": {NotEmpty()}, "AuthorityId": {NotEmpty()}}
 	//AddArticleVerify	   = Rules{"UserId":{NotEmpty()},"Title":{NotEmpty()},"SortId":{NotEmpty()}}
 	AddArticleVerify	   = Rules{"UserId":{NotEmpty()},"Title":{NotEmpty()},"SortId":{NotEmpty()},"Labels":{NotEmpty()}}
 	LabelVerify			   = Rules{"LabelName":{NotEmpty()}}
