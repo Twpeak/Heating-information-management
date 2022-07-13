@@ -1,8 +1,10 @@
 package utils
 
-import (
-	"golang.org/x/crypto/bcrypt"
-)
+import "golang.org/x/crypto/bcrypt"
+
+/**
+关于加密解密的操作
+ */
 
 // BcryptHash 使用 bcrypt 对密码进行加密
 func BcryptHash(password string) string {
@@ -15,3 +17,4 @@ func BcryptCheck(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
 }
+

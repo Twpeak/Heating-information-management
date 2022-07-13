@@ -1,26 +1,15 @@
 package request
 
-// Casbin info structure
+//封装 所有访问鉴权的请求
+
+// CasbinInfo Casbin信息结构
 type CasbinInfo struct {
-	Path   string `json:"path"`   // 路径
-	Method string `json:"method"` // 方法
+	Path	string	`json:"path"`	//路由
+	Method 	string	`json:"method"`	//方法
 }
 
-// Casbin structure for input parameters
+// CasbinInReceive 输入参数的Casbin结构
 type CasbinInReceive struct {
-	AuthorityId uint         `json:"authorityId"` // 权限id
-	CasbinInfos []CasbinInfo `json:"casbinInfos"`
-}
-
-func DefaultCasbin() []CasbinInfo {
-	return []CasbinInfo{
-		{Path: "/menu/getMenu", Method: "POST"},
-		{Path: "/jwt/jsonInBlacklist", Method: "POST"},
-		{Path: "/base/login", Method: "POST"},
-		{Path: "/user/admin_register", Method: "POST"},
-		{Path: "/user/changePassword", Method: "POST"},
-		{Path: "/user/setUserAuthority", Method: "POST"},
-		{Path: "/user/setUserInfo", Method: "PUT"},
-		{Path: "/user/getUserInfo", Method: "GET"},
-	}
+	RoleId	uint			`json:"roleId"`//权限id（角色id）
+	CasbinInfos	[]CasbinInfo	`json:"casbinInfos" `
 }

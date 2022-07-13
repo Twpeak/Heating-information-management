@@ -1,12 +1,15 @@
 package internal
 
 import (
-	"fmt"
-
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	"fmt"
 	"gorm.io/gorm/logger"
 )
 
+//此方法主要用于重写logger.writer，用于数据库的日志输出
+
+//继承gorm.logger.writer
+//我们就可以在其内部写很多操作，主要是重写Printf方法
 type writer struct {
 	logger.Writer
 }
@@ -21,14 +24,14 @@ func NewWriter(w logger.Writer) *writer {
 // Author [SliverHorn](https://github.com/SliverHorn)
 func (w *writer) Printf(message string, data ...interface{}) {
 	var logZap bool
-	switch global.GVA_CONFIG.System.DbType {
+	switch global.G_CONFIG.System.DbType {
 	case "mysql":
-		logZap = global.GVA_CONFIG.Mysql.LogZap
+		logZap = global.G_CONFIG.Mysql.LogZap
 	case "pgsql":
-		logZap = global.GVA_CONFIG.Pgsql.LogZap
+		//logZap = global.G_CONFIG.Pgsql.LogZap
 	}
 	if logZap {
-		global.GVA_LOG.Info(fmt.Sprintf(message+"\n", data...))
+		global.G_LOG.Info(fmt.Sprintf(message+"\n", data...))
 	} else {
 		w.Writer.Printf(message, data...)
 	}

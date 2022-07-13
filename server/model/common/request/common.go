@@ -2,8 +2,9 @@ package request
 
 // PageInfo Paging common input parameter structure
 type PageInfo struct {
-	Page     int    `json:"page" form:"page"`         // 页码
-	PageSize int    `json:"pageSize" form:"pageSize"` // 每页大小
+	Id       int  `json:"id" form:"id"`				//用来筛选各类的id
+	Page     int `json:"page" form:"page"`         // 页码
+	PageSize int `json:"pageSize" form:"pageSize"` // 每页大小
 	Keyword  string `json:"keyword" form:"keyword"`   //关键字
 }
 
@@ -22,7 +23,7 @@ type IdsReq struct {
 
 // GetAuthorityId Get role by id structure
 type GetAuthorityId struct {
-	AuthorityId uint `json:"authorityId" form:"authorityId"` // 角色ID
+	AuthorityId string `json:"authorityId" form:"authorityId"` // 角色ID
 }
 
 type Empty struct{}
