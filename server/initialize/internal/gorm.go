@@ -21,9 +21,9 @@ type _gorm struct {}
 // Config gorm 自定义配置
 func (g *_gorm)Config() *gorm.Config  {
 	config := &gorm.Config{
-		DisableForeignKeyConstraintWhenMigrating: false,		//自动迁移时，禁用外键约束,不禁用
+		DisableForeignKeyConstraintWhenMigrating: true,		//自动迁移时，禁用外键约束,不禁用
 		NamingStrategy: schema.NamingStrategy{
-			SingularTable: true,
+			SingularTable: false,
 		},
 	}
 	_default := logger.New(NewWriter(log.New(os.Stdout, "\r\n", log.LstdFlags)), logger.Config{

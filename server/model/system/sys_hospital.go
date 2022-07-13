@@ -5,7 +5,7 @@ import "gorm.io/gorm"
 type Hospital struct {
 	gorm.Model
 	//企业名称
-	Name string `json:"name" gorm:"comment:企业名称;"`
+	HospitalName string `json:"name" gorm:"comment:企业名称;"`
 	//社会信用代码
 	Code string `json:"code" gorm:"comment:社会信用代码;"`
 	//注册地址

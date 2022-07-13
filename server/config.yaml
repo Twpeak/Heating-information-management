@@ -1,10 +1,10 @@
 mysql:
-  path: '47.95.13.13'
-  port: '3307'
+  path: '127.0.0.1'
+  port: '3306'
   config: 'charset=utf8mb4&parseTime=True&loc=Local'
   db-name: 'db_fever_information'
   username: 'root'
-  password: 'whp666946.'
+  password: '56994902'
   max-idle-conns: 10
   max-open-conns: 100
   log-mode: ""
@@ -22,8 +22,8 @@ zap:
 
 redis:
   db: 0
-  addr: '47.95.13.13:6379'
-  password: ''
+  addr: '127.0.0.1:6379'
+  password: '56994902'
 
 jwt:
   signing-key: 'Twpeak'

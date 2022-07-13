@@ -43,11 +43,11 @@ func Routers() *gin.Engine {
 		systemRouter.InitBaseRouter(PublicGroup) //注册基础功能路由 不做鉴权
 	}
 
-	//PrivateGroup := Router.Group("")
+	PrivateGroup := Router.Group("")
 	//PrivateGroup.Use(middleware.JWTAuth()).Use(middleware.CasbinHandler())
 	//一般来说路由组里面都是post，get等操作，但我们将这里的每一句都嵌套了一个路由组
 	{
-
+		systemRouter.InitHospitalRouter(PrivateGroup)
 	}
 
 
