@@ -73,6 +73,12 @@ func Routers() *gin.Engine {
 		//修改个人密码
 		MyRelevant.PUT("/upwd", system.MyUpdatePwd)
 	}
+	FeverRelevant := Router.Group("/fever")
+	{
+		//
+		FeverRelevant.GET("", system.FeverTextLimit)
+		FeverRelevant.GET("/export", system.Export)
+	}
 
 	//InstallPlugin(PublicGroup, PrivateGroup) // 安装插件
 
