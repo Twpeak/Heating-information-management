@@ -13,6 +13,9 @@ func (s *BaseRouter)InitFeverRouter(Router *gin.RouterGroup) *gin.RouterGroup {
 	feverApi := api.ApiGroupApp.SystemApiGroup.FeverApi
 	{
 		feverRouter.GET("test",feverApi.Test)
+		feverRouter.POST("update",feverApi.UpdateFeverInfo)
+		feverRouter.DELETE("del",feverApi.DelFeverInfo)
+		feverRouter.POST("add",feverApi.AddFeverInfo)
 	}
 	return feverRouter
 }

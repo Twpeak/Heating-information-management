@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="robots" content="noindex, nofollow"/>
+    <meta name="googlebot" content="noindex, nofollow"/>
+    <title>登录注册界面 - JSRUN 驱动</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/tailwind.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css"/>
+
+</head>
+<body>
+<div class="w-screen h-screen bg-gray-100">
+  <div class="container max-w-md mx-auto">
+    <div class="info py-14 mx-auto text-center">
+      <h1 class="mb-4 text-4xl text-gray-900 font-light">Flat Login Form</h1>
+      <span class="text-xs">Made with <i class="fa fa-heart"></i> by zs2013</span>
+    </div>
+  </div>
+  <div class="form relative max-w-xs mx-auto mb-24 p-8 text-center rounded bg-white">
+    <div class="thumbnail w-36 h-36 mx-auto mb-7 py-12 px-7 rounded-full bg-red-500">
+        <img class="h-full mx-auto" src="/static/images/123.png" />
+    </div>
+    <form class="register-form" method ="post" action="http://localhost:8888/base/register" name="registerForm" enctype="multipart/form-data">
+      <input class="w-full mb-4 p-4 text-sm rounded bg-gray-100 outline-none" type="text" placeholder="name" name="Username"/>
+      <input class="w-full mb-4 p-4 text-sm rounded bg-gray-100 outline-none" type="text" placeholder="nickname" name="NickName"/>
+      <input class="w-full mb-4 p-4 text-sm rounded bg-gray-100 outline-none" type="password" placeholder="password" name="Password"/>
+      <input class="w-full mb-4 p-4 text-sm rounded bg-gray-100 outline-none" type="password" placeholder="rePassword" name="rePassword"/>
+      <button class="createBtn w-full p-4 text-sm text-white rounded bg-red-500 outline-none">create</button>
+      <p class="message mt-4 text-xs text-gray-400">Already registered? <a class="text-red-500" href="#">Sign In</a></p>
+    </form>
+    <form class="login-form"  method ="post" action="http://localhost:8888/base/login" name="loginForm " enctype="multipart/form-data">
+      <input class="w-full mb-4 p-4 text-sm rounded bg-gray-100 outline-none" type="text" placeholder="username" name="Username"/>
+      <input class="w-full mb-4 p-4 text-sm rounded bg-gray-100 outline-none" type="password" placeholder="password" name="Password" />
+        <input class="captchaId" style="display: none" name="CaptchaId">
+        <div class="captchaImg mb-4 rounded " style="display: inline-block;width: 48%;float: left;">
+            <img class="captcha" style="width: 100%; height: 100%;object-fit: cover;cursor: pointer" src="">
+        </div>
+        <input class="mb-4 p-4 text-sm bg-gray-100 outline-none captchaInput" style="width: 50%;float: right" type="text" placeholder="captcha" name="Captcha"/>
+      <button class="loginBtn w-full p-4 text-sm text-white rounded bg-red-500 outline-none">login</button>
+      <p class="message mt-4 text-xs text-gray-400">Not registered? <a class="text-red-500" href="#">Create an account</a></p>
+    </form>
+  </div>
+</div>
+
+</body>
+<script type="text/javascript" src="/static/js/jquery.js"></script>
+<script type="text/javascript" src="/static/js/jquery.form.js"></script>
+<script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
+<script charset="utf-8"  type="application/javascript" src="/static/js/main.js"></script>
+</html>
+
