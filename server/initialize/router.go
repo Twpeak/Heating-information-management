@@ -1,6 +1,7 @@
 package initialize
 
 import (
+	"github.com/flipped-aurora/gin-vue-admin/server/api/system"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/router"
 	"github.com/gin-contrib/cors"
@@ -26,11 +27,10 @@ func Routers() *gin.Engine {
 
 	Router.StaticFS(global.G_CONFIG.Local.Path, http.Dir(global.G_CONFIG.Local.StorePath)) // 为用户头像和文件提供静态地址
 	//若没有静态模板需要解析，则不需要开启
-	if 1 == 0{
+	if 1 == 0 {
 		Router.Static(global.G_CONFIG.Local.Static, global.G_CONFIG.Local.StaticPath) // 静态页面资源
 		Router.LoadHTMLGlob("templates/*")
 	}
-
 
 	// 方便统一添加路由组前缀 多服务器上线使用，————PublicGroup父路由组
 	PublicGroup := Router.Group("")
@@ -49,7 +49,19 @@ func Routers() *gin.Engine {
 	{
 		systemRouter.InitHospitalRouter(PrivateGroup)
 	}
-
+	UserRelevant := Router.Group("/user")
+	{
+		//首页所有信息
+		UserRelevant.GET("/text", system.UserInformation)
+		//添加用户
+		UserRelevant.POST("/add", system.UserAdd)
+		//修改用户前的信息回显
+		UserRelevant.GET("/utext", system.UserUpdateDisplay)
+		//修改用户
+		UserRelevant.PUT("/put", system.UserUpdate)
+		//删除用户
+		UserRelevant.DELETE("/del", system.UserDelete)
+	}
 
 	//InstallPlugin(PublicGroup, PrivateGroup) // 安装插件
 
