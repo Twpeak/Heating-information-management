@@ -176,3 +176,28 @@ func (u *UserService) DeleteUser(id uint) error {
 	err := global.G_DB.Delete(&system.SysUser{}, id).Error
 	return err
 }
+
+func (u *UserService) QueryUserText(id string) (system.SysUser, error) {
+	var user system.SysUser
+	err := global.G_DB.Model(&user).Where("id = ?", id).Scan(&user).Error
+	return user, err
+}
+
+func (u *UserService) UpdateUserText(user dto.UserTextDto) error {
+	return global.G_DB.Model(&system.SysUser{}).Where("id = ?", user.Id).Updates(system.SysUser{
+		Name:         user.Name,
+		IdentityCard: user.IdentityCard,
+		Phone:        user.Phone,
+	}).Error
+}
+
+func (u *UserService) QueryUserByIdPwd(user dto.MyPwdDto) (system.SysUser, error) {
+	var uu system.SysUser
+	err := global.G_DB.Model(&uu).Where("id = ? AND password = ?", user.Id, user.OldPwd).Scan(&uu).Error
+	return uu, err
+}
+
+func (u *UserService) UpdatePwd(user dto.MyPwdDto) error {
+	err := global.G_DB.Model(&system.SysUser{}).Where("id = ?", user.Id).Updates(system.SysUser{Password: user.Pwd1}).Error
+	return err
+}

@@ -53,3 +53,20 @@ type UserUpdateDto struct {
 type IdDto struct {
 	Id uint `json:"id"`
 }
+
+type UserTextDto struct {
+	Id uint `json:"id"`
+	//真实姓名
+	Name string `json:"name"`
+	//身份证号
+	IdentityCard string `json:"identity_card"`
+	//电话号码
+	Phone string `json:"phone"`
+}
+
+type MyPwdDto struct {
+	Id     uint   `json:"id"`
+	Pwd1   string `json:"pwd_1"`
+	Pwd2   string `json:"pwd_2"`
+	OldPwd string `json:"old_pwd"`
+}

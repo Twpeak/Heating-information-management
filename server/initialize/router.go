@@ -62,6 +62,17 @@ func Routers() *gin.Engine {
 		//删除用户
 		UserRelevant.DELETE("/del", system.UserDelete)
 	}
+	MyRelevant := Router.Group("/my")
+	{
+		//修改个人信息时的回显
+		MyRelevant.GET("/text", system.MyUpdateText)
+
+		//修改个人信息
+		MyRelevant.PUT("/utext", system.MyUpdate)
+
+		//修改个人密码
+		MyRelevant.PUT("/upwd", system.MyUpdatePwd)
+	}
 
 	//InstallPlugin(PublicGroup, PrivateGroup) // 安装插件
 
