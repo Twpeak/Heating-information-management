@@ -65,7 +65,7 @@ func UserDelete(c *gin.Context) {
 	var id dto.IdDto
 	_ = c.ShouldBindJSON(&id)
 
-	h, err := hospital.QueryBoosId(id.Id)
+	h, err := hospitalService.QueryBoosId(id.Id)
 	if err != nil {
 		global.G_LOG.Error("接口:UserDelete,删除用户失败,error:" + err.Error())
 		response.FailWithMessage("删除用户失败", c)
