@@ -11,5 +11,8 @@ var(
 	PageInfoVerify         = Rules{"Page": {NotEmpty(),Gt("0")}, "PageSize": {NotEmpty(),Gt("0")}}
 	HospitalReqVerify	   = Rules{"HospitalId":{NotEmpty()}}
 	HospitalVerify		   = Rules{"ID":{NotEmpty()},"HospitalName":{NotEmpty()},"DistrictId":{NotEmpty()}}
+	FeverInfoVerify		   = Rules{"IdentityCard":{NotEmpty(),RegexpMatch("/^0?(13[0-9]|14[5-9]|15[012356789]|166|17[0-8]|18[0-9]|19[89])[0-9]{8}$/")},
+		"Phone":{NotEmpty(),RegexpMatch("/^1[3456789]\\.{9}$/")},"NucleicAcid":{NotEmpty()},"InspectionResults":{NotEmpty()}}
 )
+
 

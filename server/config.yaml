@@ -23,7 +23,11 @@ zap:
 redis:
   db: 0
   addr: '127.0.0.1:6379'
+<<<<<<< HEAD
   password: ''
+=======
+  password: '56994902'
+>>>>>>> master
 
 jwt:
   signing-key: 'Twpeak'

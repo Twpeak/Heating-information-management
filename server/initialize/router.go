@@ -27,7 +27,7 @@ func Routers() *gin.Engine {
 
 	Router.StaticFS(global.G_CONFIG.Local.Path, http.Dir(global.G_CONFIG.Local.StorePath)) // 为用户头像和文件提供静态地址
 	//若没有静态模板需要解析，则不需要开启
-	if 1 == 0 {
+	if 1 == 1 {
 		Router.Static(global.G_CONFIG.Local.Static, global.G_CONFIG.Local.StaticPath) // 静态页面资源
 		Router.LoadHTMLGlob("templates/*")
 	}
@@ -41,6 +41,11 @@ func Routers() *gin.Engine {
 		})
 		//给 PublicGroup 父路由组注册基础（注册登录）等功能路由组
 		systemRouter.InitBaseRouter(PublicGroup) //注册基础功能路由 不做鉴权
+
+		PublicGroup.GET("/login", func(context *gin.Context) {
+			//接收前端token
+			context.HTML(http.StatusOK,"sys_login.html",nil)
+		})
 	}
 
 	PrivateGroup := Router.Group("")
@@ -48,6 +53,7 @@ func Routers() *gin.Engine {
 	//一般来说路由组里面都是post，get等操作，但我们将这里的每一句都嵌套了一个路由组
 	{
 		systemRouter.InitHospitalRouter(PrivateGroup)
+		systemRouter.InitFeverRouter(PrivateGroup)
 	}
 	UserRelevant := Router.Group("/user")
 	{
