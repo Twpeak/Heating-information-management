@@ -9,6 +9,7 @@ var(
 	LoginVerify            = Rules{"Username": {NotEmpty()}, "Password": {NotEmpty()},"Captcha": {NotEmpty()},"CaptchaId": {NotEmpty()}}
 	RegisterVerify         = Rules{"Username": {NotEmpty()}, "Name": {NotEmpty()}, "Password": {NotEmpty()}, "AuthorityId": {NotEmpty()}}
 	PageInfoVerify         = Rules{"Page": {NotEmpty(),Gt("0")}, "PageSize": {NotEmpty(),Gt("0")}}
-	HospitalIdVerify	   = Rules{"HospitalId":{NotEmpty()}}
+	HospitalReqVerify	   = Rules{"HospitalId":{NotEmpty()}}
+	HospitalVerify		   = Rules{"ID":{NotEmpty()},"HospitalName":{NotEmpty()},"DistrictId":{NotEmpty()}}
 )
 

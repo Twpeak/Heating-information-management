@@ -3,6 +3,7 @@ package system
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/system/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system/response"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -52,22 +53,26 @@ func (h *HospitalService)GetHospitalsVo()(voDate []response.HospitalVo,err error
 }
 
 //查询当前医院所有医生
-func (h *HospitalService)GetUserByHospitalId(HospitalId string)(users []system.SysUser,err error)  {
-	if err = global.G_DB.Model(system.SysUser{}).Where("HospitalId = ?",HospitalId).Find(&users).Error; err != nil{
-		global.G_LOG.Error("链表查询医院信息VO数据失败",zap.Error(err))
+func (h *HospitalService)GetUserByHospitalId(Hospital request.HospitalReq) (users []system.SysUser, err error) {
+	HospitalId := Hospital.HospitalId
+	if err = global.G_DB.Model(system.SysUser{}).Where("hospital_id = ?",HospitalId).Find(&users).Error; err != nil{
+		global.G_LOG.Error("查询当前医院所有医生失败",zap.Error(err))
 		return users,err
 	}
 	return users,err
 }
 
 //删除医院信息
-func (h *HospitalService)DelHospital(HospitalId string)(err error)  {
+func (h *HospitalService)DelHospital(req request.HospitalReq) (err error) {
+	HospitalId := req.HospitalId
 	if err = global.G_DB.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Model(system.Hospital{}).Where("id = ?", HospitalId).Delete(system.Hospital{}).Error; err != nil {
+		//物理删除
+		if err := tx.Model(&system.Hospital{}).Unscoped().Delete(&system.Hospital{},"id = ?", HospitalId).Error; err != nil {
 			global.G_LOG.Error("删除医院数据失败",zap.Error(err))
 			return err
 		}
-		if err := tx.Model(system.SysUser{}).Where("hospital_id = ?",HospitalId).Delete(system.Hospital{}).Error;err != nil {
+		//物理删除
+		if err := tx.Model(&system.SysUser{}).Unscoped().Delete(&system.SysUser{},"hospital_id = ?",HospitalId).Error;err != nil {
 			global.G_LOG.Error("删除医院中医生数据失败",zap.Error(err))
 			return err
 		}
@@ -79,6 +84,45 @@ func (h *HospitalService)DelHospital(HospitalId string)(err error)  {
 	return err
 }
 
+//修改医院信息
+func (h *HospitalService)UpdateHospital(Hospital system.Hospital) (err error) {
+	if err = global.G_DB.Model(&system.Hospital{}).Where("id = ?",Hospital.ID).
+		Updates(Hospital).Error;err != nil{
+		global.G_LOG.Error("修改医院信息失败",zap.Error(err))
+		return err
+	}
+	return err
+}
+
+
+
+//修改负责人信息(id)
+func (h *HospitalService)UpdateHospitalByUser(req request.HospitalReq) (err error) {
+	if err = global.G_DB.Model(&system.Hospital{}).Where("id = ?",req.HospitalId).
+		Update("boos_id",req.UserId).Error;err != nil{
+		global.G_LOG.Error("修改医院负责人信息失败",zap.Error(err))
+		return err
+	}
+	return err
+}
+
+//新增医院信息（基本信息）
+func (h *HospitalService)AddHospital(Hospital system.Hospital) (err error) {
+	if err = global.G_DB.Model(&system.Hospital{}).Create(&Hospital).Error;err != nil{
+		global.G_LOG.Error("添加医院信息失败",zap.Error(err))
+		return err
+	}
+	return err
+}
+
+//查询当前区域所有医院列表【分页】
+func (h *HospitalService)GetHospitalByDistrictLimit(req request.HospitalReq) (hos []system.Hospital, err error) {
+	if err = global.G_DB.Model(&system.Hospital{}).Where("district_id = ?",req.DistrictId).Find(&hos).Error;err != nil{
+		global.G_LOG.Error("修改医院负责人信息失败",zap.Error(err))
+		return hos,err
+	}
+	return hos,err
+}
 
 
 //初始化医院信息
@@ -89,6 +133,8 @@ func (HospitalService *HospitalService)InitHospital()  {
 			HospitalName: "新乡市凤泉区人民医院",
 			Code: "11111111111",
 			Address: "凤泉区区府路西段",
+			DistrictId: 1,
+			BoosId: 1,
 		},
 	}
 
