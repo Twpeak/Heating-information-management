@@ -12,7 +12,10 @@ func (DistrictService *DistrictService) InitDistrict() {
 	ddb := global.G_DB.Model(&system.District{})
 	DistrictDate := []system.District{
 		{
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
 			Id:           1,
 			DistrictName: "卫滨区",
 		},
