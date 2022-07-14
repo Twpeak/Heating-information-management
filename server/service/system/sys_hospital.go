@@ -7,8 +7,9 @@ import (
 	"go.uber.org/zap"
 )
 
-type HospitalService struct {}
+type HospitalService struct{}
 
+<<<<<<< Updated upstream
 //查询所有医院信息
 func (h *HospitalService)GetAllHospital()(list []system.Hospital,err error)  {
 	if err = global.G_DB.Model(&system.Hospital{}).Find(&list).Error; err != nil{
@@ -56,20 +57,36 @@ func (h *HospitalService)GetHospitalsVo()(voDate []response.HospitalVo,err error
 
 //初始化医院信息
 func (HospitalService *HospitalService)InitHospital()  {
+=======
+func (HospitalService *HospitalService) InitHospital() {
+>>>>>>> Stashed changes
 	hdb := global.G_DB.Model(&system.Hospital{})
 	sortDate := []system.Hospital{
 		{
 			HospitalName: "新乡市凤泉区人民医院",
+<<<<<<< Updated upstream
 			Code: "11111111111",
 			Address: "凤泉区区府路西段",
+=======
+			Code:         "11111111111",
+			Address:      "凤泉区区府路西段",
+			BoosId:       1,
+			DistrictId:   1,
+>>>>>>> Stashed changes
 		},
 	}
 
-	for _,date := range sortDate{
-		if err := hdb.FirstOrCreate(&system.Hospital{},&date).Error;err != nil{
-			global.G_LOG.Error("分类数据初始化失败",zap.Error(err))
+	for _, date := range sortDate {
+		if err := hdb.FirstOrCreate(&system.Hospital{}, &date).Error; err != nil {
+			global.G_LOG.Error("分类数据初始化失败", zap.Error(err))
 			return
 		}
 	}
 	return
+}
+
+func (h *HospitalService) QueryBoosId(id uint) (system.Hospital, error) {
+	var hospital system.Hospital
+	err := global.G_DB.Model(&system.Hospital{}).Where("boos_id = ?", id).Scan(&hospital).Error
+	return hospital, err
 }

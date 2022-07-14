@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/system/dto"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	uuid "github.com/satori/go.uuid"
 	"go.uber.org/zap"
@@ -13,7 +14,7 @@ import (
 
 //关于用户的操作逻辑:登录，注册
 
-type UserService struct {}
+type UserService struct{}
 
 // Login
 //@function: Login
@@ -21,20 +22,20 @@ type UserService struct {}
 //@param: u *model.SysUser
 //@return: err error, userInter *model.SysUser
 
-func (userService *UserService)Login(u *system.SysUser)(UserInter *system.SysUser,err error)  {
-	if nil == global.G_DB{		//先判断是否连接数据库
-		return nil,fmt.Errorf("db not init")
+func (userService *UserService) Login(u *system.SysUser) (UserInter *system.SysUser, err error) {
+	if nil == global.G_DB { //先判断是否连接数据库
+		return nil, fmt.Errorf("db not init")
 	}
 
 	var user system.SysUser
-	err = global.G_DB.Where("username = ?",u.Username).Preload("Role").First(&user).Error
+	err = global.G_DB.Where("username = ?", u.Username).Preload("Role").First(&user).Error
 	if err != nil {
 		//没有解密，只是封装了加密和对比两个操作而已
 		if ok := utils.BcryptCheck(u.Password, user.Password); !ok {
 			return nil, errors.New("密码错误")
 		}
 	}
-	return &user,err
+	return &user, err
 }
 
 //@function: Register
@@ -54,77 +55,124 @@ func (userService *UserService) Register(u system.SysUser) (userInter system.Sys
 	return u, err
 }
 
-func (userService *UserService)InitUserRole()  {
+func (userService *UserService) InitUserRole() {
 	rdb := global.G_DB.Model(&system.SysRole{})
 	udb := global.G_DB.Model(&system.SysUser{})
 	RoleDate := []system.SysRole{
 		//....角色信息初始化数据
 		{
-			Id: 1,
+			Id:       1,
 			RoleName: "系统管理员",
 		},
 		{
-			Id: 2,
+			Id:       2,
 			RoleName: "县区管理员",
 		},
 		{
-			Id: 3,
+			Id:       3,
 			RoleName: "医院管理员",
 		},
 		{
-			Id: 4,
+			Id:       4,
 			RoleName: "医生",
 		},
 	}
 	UserDate := []system.SysUser{
 		{
-			Username: "admin",
-			Password: "123456",
-			RoleId: 1,
-			Name: "系统管理员",
-			IdentityCard:"410703900003074014",
-			Phone: "15516575533",
-			HospitalId: 1,
+			Username:     "admin",
+			Password:     "123456",
+			RoleId:       1,
+			Name:         "系统管理员",
+			IdentityCard: "410703900003074014",
+			Phone:        "15516575533",
+			HospitalId:   1,
 		}, {
-			Username: "dis_admin",
-			Password: "123456",
-			RoleId: 2,
-			Name: "县区管理员",
-			IdentityCard:"410703900003074014",
-			Phone: "15516575533",
-			HospitalId: 1,
-		},{
-			Username: "hos_admin",
-			Password: "123456",
-			RoleId: 3,
-			Name: "医院管理员",
-			IdentityCard:"410703900003074014",
-			Phone: "15516575533",
-			HospitalId: 1,
-		},{
-			Username: "docter",
-			Password: "123456",
-			RoleId: 4,
-			Name: "医生",
-			IdentityCard:"410703900003074014",
-			Phone: "15516575533",
-			HospitalId: 1,
+			Username:     "dis_admin",
+			Password:     "123456",
+			RoleId:       2,
+			Name:         "县区管理员",
+			IdentityCard: "410703900003074014",
+			Phone:        "15516575533",
+			HospitalId:   1,
+		}, {
+			Username:     "hos_admin",
+			Password:     "123456",
+			RoleId:       3,
+			Name:         "医院管理员",
+			IdentityCard: "410703900003074014",
+			Phone:        "15516575533",
+			HospitalId:   1,
+		}, {
+			Username:     "docter",
+			Password:     "123456",
+			RoleId:       4,
+			Name:         "医生",
+			IdentityCard: "410703900003074014",
+			Phone:        "15516575533",
+			HospitalId:   1,
 		},
-
 	}
-	for _,date := range RoleDate{
-		if err := rdb.FirstOrCreate(&system.SysRole{},&date).Error;err != nil{
-			global.G_LOG.Error("角色数据初始化失败",zap.Error(err))
+	for _, date := range RoleDate {
+		if err := rdb.FirstOrCreate(&system.SysRole{}, &date).Error; err != nil {
+			global.G_LOG.Error("角色数据初始化失败", zap.Error(err))
 			return
 		}
 	}
 
-	for _,udate := range UserDate{
-		if err := udb.FirstOrCreate(&system.SysUser{},&udate).Error;err != nil{
-			global.G_LOG.Error("管理员数据初始化失败",zap.Error(err))
+	for _, udate := range UserDate {
+		if err := udb.FirstOrCreate(&system.SysUser{}, &udate).Error; err != nil {
+			global.G_LOG.Error("管理员数据初始化失败", zap.Error(err))
 			return
 		}
 	}
 
 	return
+}
+
+func (u *UserService) QueryUserAll() (res []dto.UserInformationDto, err error) {
+	err = global.G_DB.Model(&system.SysUser{}).
+		Select("sys_users.id,sys_users.updated_at,sys_users.name,sys_users.username,sys_users.identity_card,sys_users.phone,hospital.hospital_name").
+		Joins("left join hospital on sys_users.hospital_id=hospital.id").Find(&res).Error
+	return res, err
+}
+
+func (u *UserService) CreateUser(res dto.UserCreateDto) error {
+	user := system.SysUser{
+		Username:     res.Username,
+		Name:         res.Name,
+		Password:     res.Password,
+		RoleId:       res.RoleId,
+		IdentityCard: res.IdentityCard,
+		Phone:        res.Phone,
+		HospitalId:   res.HospitalId,
+	}
+	err := global.G_DB.Model(&system.SysUser{}).Create(&user).Error
+	return err
+}
+
+func (u *UserService) IsUsername(username string) (system.SysUser, error) {
+	var user system.SysUser
+	err := global.G_DB.Model(&system.SysUser{}).Where("username = ?", username).Scan(&user).Error
+	return user, err
+}
+func (u *UserService) QueryUserById(id string) (system.SysUser, error) {
+	var user system.SysUser
+	err := global.G_DB.Model(&system.SysUser{}).Where("id = ?", id).Scan(&user).Error
+	return user, err
+}
+
+func (u *UserService) UpdateUser(res dto.UserUpdateDto) error {
+	return global.G_DB.Model(&system.SysUser{}).Where("id = ?", res.Id).
+		Updates(system.SysUser{
+			Name:         res.Name,
+			Password:     res.Password,
+			RoleId:       res.RoleId,
+			IdentityCard: res.IdentityCard,
+			Phone:        res.Phone,
+		}).Error
+}
+
+func (u *UserService) DeleteUser(id uint) error {
+	err := global.G_DB.Delete(&system.SysUser{}, id).Error
+	return err
 }

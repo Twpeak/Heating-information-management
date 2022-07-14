@@ -5,7 +5,7 @@ import "gorm.io/gorm"
 type FeverInfo struct {
 	gorm.Model
 	//名字
-	Name string `json:"name" gorm:"comment:患者姓名;"`
+	FeverInfoName string `json:"fever_info_name" gorm:"comment:患者姓名;"`
 	//性别
 	Gender bool `json:"gender" gorm:"comment:性别;"`
 	//年龄
