@@ -6,4 +6,5 @@ type ServiceGroup struct {
 	UserService
 	HospitalService
 	DistrictService
+	FeverService
 }

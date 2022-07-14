@@ -11,7 +11,6 @@ import (
 
 type HospitalService struct{}
 
-<<<<<<< Updated upstream
 //查询所有医院信息
 func (h *HospitalService)GetAllHospital()(list []system.Hospital,err error)  {
 	if err = global.G_DB.Model(&system.Hospital{}).Find(&list).Error; err != nil{
@@ -148,6 +147,9 @@ func (HospitalService *HospitalService)InitHospital()  {
 	}
 	return
 }
+
+
+//通过负责人查找医院？
 func (h *HospitalService) QueryBoosId(id uint) (system.Hospital, error) {
 	var hospital system.Hospital
 	err := global.G_DB.Model(&system.Hospital{}).Where("boos_id = ?", id).Scan(&hospital).Error
