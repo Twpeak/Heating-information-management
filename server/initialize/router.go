@@ -42,7 +42,7 @@ func Routers() *gin.Engine {
 		//给 PublicGroup 父路由组注册基础（注册登录）等功能路由组
 		systemRouter.InitBaseRouter(PublicGroup) //注册基础功能路由 不做鉴权
 
-		PublicGroup.GET("/login", func(context *gin.Context) {
+		PublicGroup.GET("/login", func(context *gin.Context) {	//测试登录是否成功的页面渲染，可以关掉
 			//接收前端token
 			context.HTML(http.StatusOK,"sys_login.html",nil)
 		})
