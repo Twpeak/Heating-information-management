@@ -7,6 +7,8 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system/response"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
+	"strconv"
+	"strings"
 )
 
 type HospitalService struct{}
@@ -119,6 +121,44 @@ func (h *HospitalService) GetHospitalByDistrictLimit(req request.HospitalReq) (h
 	}
 	return hos, err
 }
+
+//通过医院名查询医院数据
+func (h *HospitalService) GetHospitalByHospitalName(req request.KeyReq) (hos []system.Hospital, err error) {
+	key := req.Key
+	if err = global.G_DB.Model(&system.Hospital{}).Where("hospital_name = ?",key).Find(hos).Error;err != nil{
+		global.G_LOG.Error("通过医院名查找医院信息失败", zap.Error(err))
+		return hos, err
+	}
+	return hos, err
+}
+
+//通过关键字【分页】查询医院视图数据
+func (h *HospitalService) GetHospitalByKey(req request.KeyReq) (hos []response.HospitalVo, err error) {
+	key := req.Key
+	vo, _ := h.GetHospitalsVo()
+	for _,Item := range vo{
+		switch  {
+		case strings.Contains(strconv.Itoa(int(Item.ID)),key):
+			hos = append(hos,Item)
+		case strings.Contains(Item.Name,key):
+			hos = append(hos,Item)
+		case strings.Contains(Item.Code,key):
+			hos = append(hos,Item)
+		case strings.Contains(Item.Address,key):
+			hos = append(hos,Item)
+		case strings.Contains(Item.Username,key):
+			hos = append(hos,Item)
+		case strings.Contains(Item.IdentityCard,key):
+			hos = append(hos,Item)
+		case strings.Contains(Item.Phone,key):
+			hos = append(hos,Item)
+		case strings.Contains(Item.DistrictName,key):
+			hos = append(hos,Item)
+		}
+	}
+	return hos, err
+}
+
 
 //初始化医院信息
 func (HospitalService *HospitalService) InitHospital() {

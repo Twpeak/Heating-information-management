@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	//gin.SetMode(gin.TestMode)
 	global.G_VIPER = core.Viper()	//初始化Viper,载入配置文件
 	//fmt.Println(global.G_CONFIG.Captcha)
 	global.G_LOG = core.Zap()		// 初始化zap日志库

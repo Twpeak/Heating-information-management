@@ -1,10 +1,10 @@
 mysql:
-  path: '47.95.13.13'
-  port: '3307'
+  path: '127.0.0.1'
+  port: '3306'
   config: 'charset=utf8mb4&parseTime=True&loc=Local'
   db-name: 'db_fever_information'
   username: 'root'
-  password: 'whp666946.'
+  password: '56994902'
   max-idle-conns: 10
   max-open-conns: 100
   log-mode: ""
@@ -55,10 +55,10 @@ timer:
   start: true
   spec: '@daily'
   detail:
-#    - 只需要测试一个就够了。
-#    - tableName: sys_operation_records
-#      compareField: created_at
-#      interval: 2160h
+    #    - 只需要测试一个就够了。
+    #    - tableName: sys_operation_records
+    #      compareField: created_at
+    #      interval: 2160h
     - tableName: jwt_blacklists
       compareField: created_at
       interval: 168h
@@ -82,7 +82,7 @@ captcha:
   show-line-options: 2
   source: "Twpeak中国制质智造123456789"
   bgcolor: {R: 255,G: 255,B: 0,A: 255}
-#  fonts: ["hanzione.ttf","hanzitwo.ttf"]
+  #  fonts: ["hanzione.ttf","hanzitwo.ttf"]
   fonts: nil
   language: [ "en","ja","ru","zh" ]
 
