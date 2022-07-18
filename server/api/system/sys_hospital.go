@@ -40,7 +40,7 @@ func (h *HospitalApi) GetAllBossId(c *gin.Context) {
 func (h *HospitalApi) GetUserByHospitalId(c *gin.Context) {
 	//取参
 	var req request.HospitalReq
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := c.ShouldBindQuery(&req); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -151,12 +151,7 @@ func (h *HospitalApi) AddHospital(c *gin.Context) {
 func (h *HospitalApi) GetHospitalByDistrictLimit(c *gin.Context) {
 	//取参
 	var req request.HospitalReq
-	if err := c.ShouldBindJSON(&req); err != nil {
-		response.FailWithMessage(err.Error(), c)
-		return
-	}
-	//校验
-	if err := utils.Verify(req, utils.HospitalReqVerify); err != nil {
+	if err := c.ShouldBindQuery(&req); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -170,10 +165,42 @@ func (h *HospitalApi) GetHospitalByDistrictLimit(c *gin.Context) {
 	response.OkWithData(gin.H{"date": hospitallist}, c)
 }
 
-//通过关键字查询
+//通过医院名查询医院数据
+func (h *HospitalApi)GetHospitalByHospitalName(c *gin.Context)  {
+	//取参
+	var req request.KeyReq
+	if err := c.ShouldBindQuery(&req); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	//查询
+	hospitallist, err := hospitalService.GetHospitalByHospitalName(req)
+	if err != nil {
+		global.G_LOG.Error("查询失败", zap.Error(err))
+		response.FailWithMessage("查询失败", c)
+		return
+	}
+	response.OkWithData(gin.H{"date": hospitallist}, c)
+
+}
+
+//通过关键字查询[分页]获取
 //两种思路：1.利用mysql视图 2.使用redis缓存Zset排序
 func (h *HospitalApi) GetHospital(c *gin.Context) {
-
+	//取参
+	var req request.KeyReq
+	if err := c.ShouldBindQuery(&req); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	//查询
+	hospitallist, err := hospitalService.GetHospitalByKey(req)
+	if err != nil {
+		global.G_LOG.Error("查询失败", zap.Error(err))
+		response.FailWithMessage("查询失败", c)
+		return
+	}
+	response.OkWithData(gin.H{"date": hospitallist}, c)
 }
 
 //同时通过负责人信息去自动添加用户信息

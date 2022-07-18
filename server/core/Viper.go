@@ -29,10 +29,10 @@ func Viper(path ...string) *viper.Viper  {
 					fmt.Printf("您正在使用gin模式的%s环境,config的路径为%s\n",gin.EnvGinMode,ConfigDefaultFile)
 				case gin.ReleaseMode:
 					config = ConfigReleaseFile
-					fmt.Printf("您正在使用gin模式的%s环境,config的路径为%s\n",gin.EnvGinMode,ConfigReleaseFile)
+					fmt.Printf("您正在使用gin模式的%s环境,config的路径为%s\n",gin.ReleaseMode,ConfigReleaseFile)
 				case gin.TestMode:
 					config = ConfigTestFile
-					fmt.Printf("您正在使用gin模式的%s环境,config的路径为%s\n",gin.EnvGinMode,ConfigTestFile)
+					fmt.Printf("您正在使用gin模式的%s环境,config的路径为%s\n",gin.TestMode,ConfigTestFile)
 				}
 			}else{	//存储的环境变量不为空，则赋值给config
 				config = configEnv
