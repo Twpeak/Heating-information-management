@@ -52,23 +52,27 @@ local:
   static-path: ./server/resource/Static
 
 timer:
-  start: true
-  spec: '@daily'
   detail:
-    #    - 只需要测试一个就够了。
-    #    - tableName: sys_operation_records
-    #      compareField: created_at
-    #      interval: 2160h
     - tableName: jwt_blacklists
       compareField: created_at
       interval: 168h
+      baseTaskParameter:
+        taskName: ClearDB
+        start: true
+        spec: '@daily'
+  emailTask:
+    baseTaskParameter:
+      spec: '@every 10s'
+      start: true
+      taskName: emailTask
+
 email:
-  to: xxx@qq.com
-  port: 465
-  from: xxx@163.com
-  host: smtp.163.com
+  to: 2914075814@qq.com
+  port: 25
+  from: 2914075814@qq.com
+  host: smtp.qq.com
   is-ssl: true
-  secret: xxx
+  secret: esmadhutaetgdhff
   nickname: test
 
 captcha:

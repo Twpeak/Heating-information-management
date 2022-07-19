@@ -12,6 +12,7 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.3.0
 	github.com/google/go-cmp v0.5.8 // indirect
 	github.com/jackc/pgx/v4 v4.15.0 // indirect
+	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
 	github.com/mitchellh/mapstructure v1.2.2 // indirect
 	github.com/mojocn/base64Captcha v1.3.1
 	github.com/natefinch/lumberjack v2.0.0+incompatible

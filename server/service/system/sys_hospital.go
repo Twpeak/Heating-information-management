@@ -2,6 +2,7 @@ package system
 
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	reqCom "github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system/response"
@@ -23,8 +24,10 @@ func (h *HospitalService) GetAllHospital() (list []system.Hospital, err error) {
 }
 
 //查询医院负责人信息
-func (h *HospitalService) GetBossByBossId(id uint) (user system.SysUser, err error) {
-	if err = global.G_DB.Model(&system.SysUser{}).Where("id = ?", id).Find(&user).Error; err != nil {
+func (h *HospitalService) GetBossByBossId(HospitalId uint) (user system.SysUser, err error) {
+	var userid uint
+	global.G_DB.Model(system.Hospital{}).Select("boos_id").Where("id = ?",HospitalId).Scan(&userid)
+	if err = global.G_DB.Model(&system.SysUser{}).Where("id = ?",userid ).Scan(&user).Error; err != nil {
 		global.G_LOG.Error("查询医院负责人信息失败", zap.Error(err))
 		return user, err
 	}
@@ -40,16 +43,18 @@ func (h *HospitalService) GetDistrictByDistrictId(id uint) (dis system.District,
 	return dis, err
 }
 
-//链表查询医院信息和负责人信息
-func (h *HospitalService) GetHospitalsVo() (voDate []response.HospitalVo, err error) {
-	if err = global.G_DB.Model(&system.Hospital{}).Debug().Select("hospitals.*,districts.district_name,sys_users.*").
+//链表查询医院信息和负责人信息[分页]
+func (h *HospitalService) GetHospitalsVo(pageInfo reqCom.PageInfo) (voDate []response.HospitalVo,total int64,  err error) {
+	limit := pageInfo.PageSize
+	offset := pageInfo.PageSize * (pageInfo.Page - 1)
+	if err = global.G_DB.Model(&system.Hospital{}).Limit(limit).Offset(offset).Debug().Select("hospitals.*,districts.district_name,sys_users.*").
 		Joins("left join districts on districts.id = hospitals.district_id").
 		Joins("left join sys_users on sys_users.id = hospitals.boos_id").
-		Scan(&voDate).Error; err != nil {
+		Scan(&voDate).Count(&total).Error; err != nil {
 		global.G_LOG.Error("链表查询医院信息VO数据失败", zap.Error(err))
-		return voDate, err
+		return
 	}
-	return voDate, err
+	return
 }
 
 //查询当前医院所有医生
@@ -114,33 +119,41 @@ func (h *HospitalService) AddHospital(Hospital system.Hospital) (err error) {
 }
 
 //查询当前区域所有医院列表【分页】
-func (h *HospitalService) GetHospitalByDistrictLimit(req request.HospitalReq) (hos []system.Hospital, err error) {
-	if err = global.G_DB.Model(&system.Hospital{}).Where("district_id = ?", req.DistrictId).Find(&hos).Error; err != nil {
+func (h *HospitalService) GetHospitalByDistrictLimit(req request.HospitalReq) (hos []system.Hospital,total int64, err error) {
+	limit := req.PageSize
+	offset := req.PageSize * (req.Page - 1)
+	if err = global.G_DB.Limit(limit).Offset(offset).Model(&system.Hospital{}).
+		Where("district_id = ?", req.DistrictId).Find(&hos).Count(&total).Error; err != nil {
 		global.G_LOG.Error("修改医院负责人信息失败", zap.Error(err))
-		return hos, err
+		return
 	}
-	return hos, err
+	return
 }
 
-//通过医院名查询医院数据
-func (h *HospitalService) GetHospitalByHospitalName(req request.KeyReq) (hos []system.Hospital, err error) {
+//通过医院名查询医院数据【分页】
+func (h *HospitalService) GetHospitalByHospitalName(req request.KeyReq) (hos []system.Hospital,total int64, err error) {
+	limit := req.PageSize
+	offset := req.PageSize * (req.Page - 1)
 	key := req.Key
-	if err = global.G_DB.Model(&system.Hospital{}).Where("hospital_name = ?",key).Find(hos).Error;err != nil{
+	if err = global.G_DB.Limit(limit).Offset(offset).Model(&system.Hospital{}).
+		Where("hospital_name LIKE ?","%"+key+"%").Find(&hos).Count(&total).Error;err != nil{
 		global.G_LOG.Error("通过医院名查找医院信息失败", zap.Error(err))
-		return hos, err
+		return
 	}
-	return hos, err
+	return
 }
 
-//通过关键字【分页】查询医院视图数据
-func (h *HospitalService) GetHospitalByKey(req request.KeyReq) (hos []response.HospitalVo, err error) {
+//通过关键字查询医院视图数据【分页】
+func (h *HospitalService) GetHospitalByKey(req request.KeyReq) (hos []response.HospitalVo,total int64, err error) {
+	limit := req.PageSize
+	offset := req.PageSize * (req.Page - 1)
 	key := req.Key
-	vo, _ := h.GetHospitalsVo()
+	vo,total, _ := h.GetHospitalsVo(req.PageInfo)
 	for _,Item := range vo{
 		switch  {
 		case strings.Contains(strconv.Itoa(int(Item.ID)),key):
 			hos = append(hos,Item)
-		case strings.Contains(Item.Name,key):
+		case strings.Contains(Item.HospitalName,key):
 			hos = append(hos,Item)
 		case strings.Contains(Item.Code,key):
 			hos = append(hos,Item)
@@ -156,7 +169,7 @@ func (h *HospitalService) GetHospitalByKey(req request.KeyReq) (hos []response.H
 			hos = append(hos,Item)
 		}
 	}
-	return hos, err
+	return hos[offset:offset+limit], total,err
 }
 
 

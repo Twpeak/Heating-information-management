@@ -11,12 +11,10 @@ import (
 func main() {
 	//gin.SetMode(gin.TestMode)
 	global.G_VIPER = core.Viper()	//初始化Viper,载入配置文件
-	//fmt.Println(global.G_CONFIG.Captcha)
 	global.G_LOG = core.Zap()		// 初始化zap日志库
 	zap.ReplaceGlobals(global.G_LOG)	//将zap提供的Logger and SugaredLogger替换为Logger
 	global.G_DB = initialize.Gorm()	//gorm连接数据库
 	initialize.Timer()				//定时任务管理器是在全局变量配置中初始化的，所以这里仅仅是开启了删除表的定时任务
-
 	if global.G_DB != nil{			//若成功连接数据库
 
 		initialize.RegisterTables(global.G_DB)	//初始化表

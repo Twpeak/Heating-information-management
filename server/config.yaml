@@ -23,11 +23,7 @@ zap:
 redis:
   db: 0
   addr: '127.0.0.1:6379'
-<<<<<<< HEAD
-  password: ''
-=======
   password: '56994902'
->>>>>>> master
 
 jwt:
   signing-key: 'Twpeak'
@@ -56,23 +52,30 @@ local:
   static-path: ./server/resource/Static
 
 timer:
-  start: true
-  spec: '@daily'
   detail:
-#    - 只需要测试一个就够了。
-#    - tableName: sys_operation_records
-#      compareField: created_at
-#      interval: 2160h
     - tableName: jwt_blacklists
       compareField: created_at
       interval: 168h
+      baseTaskParameter:
+        taskName: ClearDB
+        start: true
+        spec: '@daily'
+  emailTask:
+    baseTaskParameter:
+      spec: '@every 10s'
+      start: true
+      taskName: emailTask
+
+
+#  添加定时任务...
+
 email:
-  to: xxx@qq.com
-  port: 465
-  from: xxx@163.com
-  host: smtp.163.com
-  is-ssl: true
-  secret: xxx
+  to: 2914075814@qq.com
+  port: 25
+  from: 2914075814@qq.com
+  host: smtp.qq.com
+  is-ssl: false
+  secret: esmadhutaetgdhff
   nickname: test
 
 captcha:

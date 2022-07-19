@@ -18,6 +18,8 @@ type SysUser struct {
 	IdentityCard string `json:"identity_card" gorm:"comment:身份证号;"` //想写一个，注册时默认登录密码为身份证号码后六位的接口
 	//电话号码
 	Phone string `json:"phone" gorm:"comment:电话号码;"`
+	//电子邮箱
+	Email string `json:"email" gorm:"comment:电子邮箱;"`
 	//所属医院
 	HospitalId uint `json:"hospital_id" gorm:"comment:所属医院;"`
 }

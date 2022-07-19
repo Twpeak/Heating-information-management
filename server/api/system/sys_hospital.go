@@ -2,6 +2,7 @@ package system
 
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	reqCom "github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system/request"
@@ -13,16 +14,59 @@ import (
 type HospitalApi struct {
 }
 
-//查询医院信息和负责人信息，返回vo
+//查询医院信息和负责人信息，返回vo[分页]
 func (h *HospitalApi) GetHospitalAndBoss(c *gin.Context) {
+	//取参
+	var req reqCom.PageInfo
+	if err := c.ShouldBindQuery(&req); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	//校验
+	if err := utils.Verify(req, utils.PageInfoVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
 	//查询
-	list, err := hospitalService.GetHospitalsVo()
+	list, total,err := hospitalService.GetHospitalsVo(req)
 	if err != nil {
 		global.G_LOG.Error("查询失败", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 		return
 	}
-	response.OkWithData(gin.H{"date": list}, c)
+	response.OkWithDetailed(response.PageResult{
+		List:		list,
+		Total: 		total,
+		Page: 		req.Page,
+		PageSize: 	req.PageSize,
+	},"获取成功", c)
+}
+
+//获取所有医院信息
+func (h *HospitalApi) GetAllHospital(c *gin.Context) {
+	hospital, err := hospitalService.GetAllHospital()
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	response.OkWithDetailed(hospital,"删除医院信息成功", c)
+}
+
+
+//查询医院负责人信息
+func (h *HospitalApi) GetBossByBossId(c *gin.Context) {
+	var req request.HospitalReq
+	if err := c.ShouldBindQuery(&req); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	user, err := hospitalService.GetBossByBossId(req.HospitalId)
+	if err != nil {
+		global.G_LOG.Error("查询失败", zap.Error(err))
+		response.FailWithMessage("查询失败", c)
+		return
+	}
+	response.OkWithData(user, c)
 }
 
 //获取所有医院负责人Id列表
@@ -33,7 +77,7 @@ func (h *HospitalApi) GetAllBossId(c *gin.Context) {
 		response.FailWithMessage("查询失败", c)
 		return
 	}
-	response.OkWithData(gin.H{"date": ids}, c)
+	response.OkWithData(ids, c)
 }
 
 //通过医院查询当前医院的所有医生
@@ -56,7 +100,7 @@ func (h *HospitalApi) GetUserByHospitalId(c *gin.Context) {
 		response.FailWithMessage("查询失败", c)
 		return
 	}
-	response.OkWithData(gin.H{"date": userlist}, c)
+	response.OkWithData(userlist, c)
 }
 
 //删除医院将删除其下的所有医生账户
@@ -147,7 +191,7 @@ func (h *HospitalApi) AddHospital(c *gin.Context) {
 
 }
 
-//当前区县内[分页]获取医院列表
+//当前区县内获取医院列表[分页]
 func (h *HospitalApi) GetHospitalByDistrictLimit(c *gin.Context) {
 	//取参
 	var req request.HospitalReq
@@ -155,17 +199,29 @@ func (h *HospitalApi) GetHospitalByDistrictLimit(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	//校验
+	if &req.PageInfo != nil{
+		if err := utils.Verify(req.PageInfo, utils.PageInfoVerify); err != nil {
+			response.FailWithMessage(err.Error(), c)
+			return
+		}
+	}
 	//查询
-	hospitallist, err := hospitalService.GetHospitalByDistrictLimit(req)
+	hospitallist,total, err := hospitalService.GetHospitalByDistrictLimit(req)
 	if err != nil {
 		global.G_LOG.Error("查询失败", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 		return
 	}
-	response.OkWithData(gin.H{"date": hospitallist}, c)
+	response.OkWithDetailed(response.PageResult{
+		List:		hospitallist,
+		Total: 		total,
+		Page: 		req.Page,
+		PageSize: 	req.PageSize,
+	},"获取成功", c)
 }
 
-//通过医院名查询医院数据
+//通过医院名查询医院数据[分页]
 func (h *HospitalApi)GetHospitalByHospitalName(c *gin.Context)  {
 	//取参
 	var req request.KeyReq
@@ -173,15 +229,26 @@ func (h *HospitalApi)GetHospitalByHospitalName(c *gin.Context)  {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	//校验
+	if &req.PageInfo != nil{
+		if err := utils.Verify(req.PageInfo, utils.PageInfoVerify); err != nil {
+			response.FailWithMessage(err.Error(), c)
+			return
+		}
+	}
 	//查询
-	hospitallist, err := hospitalService.GetHospitalByHospitalName(req)
+	hospitallist,total, err := hospitalService.GetHospitalByHospitalName(req)
 	if err != nil {
 		global.G_LOG.Error("查询失败", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 		return
 	}
-	response.OkWithData(gin.H{"date": hospitallist}, c)
-
+	response.OkWithDetailed(response.PageResult{
+		List:		hospitallist,
+		Total: 		total,
+		Page: 		req.Page,
+		PageSize: 	req.PageSize,
+	},"获取成功", c)
 }
 
 //通过关键字查询[分页]获取
@@ -194,13 +261,18 @@ func (h *HospitalApi) GetHospital(c *gin.Context) {
 		return
 	}
 	//查询
-	hospitallist, err := hospitalService.GetHospitalByKey(req)
+	hospitallist,total, err := hospitalService.GetHospitalByKey(req)
 	if err != nil {
 		global.G_LOG.Error("查询失败", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 		return
 	}
-	response.OkWithData(gin.H{"date": hospitallist}, c)
+	response.OkWithDetailed(response.PageResult{
+		List:		hospitallist,
+		Total: 		total,
+		Page: 		req.Page,
+		PageSize: 	req.PageSize,
+	},"获取成功", c)
 }
 
 //同时通过负责人信息去自动添加用户信息

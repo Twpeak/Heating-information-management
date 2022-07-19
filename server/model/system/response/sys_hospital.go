@@ -4,7 +4,7 @@ package response
 type HospitalVo struct {
 	ID        uint `gorm:"primarykey"`
 	//企业名称
-	Name string 				`json:"name" gorm:"comment:企业名称;"`
+	HospitalName string 		`json:"hospital_name" gorm:"comment:企业名称;"`
 	//社会信用代码
 	Code string 				`json:"code" gorm:"comment:社会信用代码;"`
 	//注册地址

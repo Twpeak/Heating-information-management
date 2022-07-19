@@ -19,5 +19,7 @@ type Server struct {
 
 	//待扩展业务
 	//Excel Excel `mapstructure:"excel" json:"excel" yaml:"excel"`
+	Email   Email   `mapstructure:"email" json:"email" yaml:"email"`
+
 
 }
