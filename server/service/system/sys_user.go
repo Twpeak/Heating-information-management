@@ -131,8 +131,8 @@ func (userService *UserService) InitUserRole() {
 
 func (u *UserService) QueryUserAll() (res []dto.UserInformationDto, err error) {
 	err = global.G_DB.Model(&system.SysUser{}).
-		Select("sys_users.id,sys_users.updated_at,sys_users.name,sys_users.username,sys_users.identity_card,sys_users.phone,hospital.hospital_name").
-		Joins("left join hospital on sys_users.hospital_id=hospital.id").Find(&res).Error
+		Select("sys_users.id,sys_users.updated_at,sys_users.name,sys_users.username,sys_users.identity_card,sys_users.phone,hospitals.hospital_name").
+		Joins("left join hospitals on sys_users.hospital_id=hospitals.id").Find(&res).Error
 	return res, err
 }
 
