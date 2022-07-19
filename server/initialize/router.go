@@ -42,9 +42,9 @@ func Routers() *gin.Engine {
 		//给 PublicGroup 父路由组注册基础（注册登录）等功能路由组
 		systemRouter.InitBaseRouter(PublicGroup) //注册基础功能路由 不做鉴权
 
-		PublicGroup.GET("/login", func(context *gin.Context) {	//测试登录是否成功的页面渲染，可以关掉
+		PublicGroup.GET("/login", func(context *gin.Context) { //测试登录是否成功的页面渲染，可以关掉
 			//接收前端token
-			context.HTML(http.StatusOK,"sys_login.html",nil)
+			context.HTML(http.StatusOK, "sys_login.html", nil)
 		})
 	}
 
@@ -78,6 +78,16 @@ func Routers() *gin.Engine {
 
 		//修改个人密码
 		MyRelevant.PUT("/upwd", system.MyUpdatePwd)
+	}
+	DistrictsRelevant := Router.Group("/districts")
+	{
+		//区县信息
+		DistrictsRelevant.GET("", system.DistrictsText)
+		//修改区县名字
+		DistrictsRelevant.PUT("/update", system.DistrictsUpdate)
+		//删除区县
+		DistrictsRelevant.DELETE("/del", system.DistrictsDel)
+
 	}
 
 	//InstallPlugin(PublicGroup, PrivateGroup) // 安装插件

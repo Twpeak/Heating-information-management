@@ -1,31 +1,35 @@
 package main
 
 import (
+	"fmt"
 	"github.com/flipped-aurora/gin-vue-admin/server/core"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/initialize"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/system"
 	"go.uber.org/zap"
+	"time"
 )
 
 func main() {
+	fmt.Println(time.Now())
 	//gin.SetMode(gin.TestMode)
-	global.G_VIPER = core.Viper()	//初始化Viper,载入配置文件
-	global.G_LOG = core.Zap()		// 初始化zap日志库
-	zap.ReplaceGlobals(global.G_LOG)	//将zap提供的Logger and SugaredLogger替换为Logger
-	global.G_DB = initialize.Gorm()	//gorm连接数据库
-	initialize.Timer()				//定时任务管理器是在全局变量配置中初始化的，所以这里仅仅是开启了删除表的定时任务
-	if global.G_DB != nil{			//若成功连接数据库
 
-		initialize.RegisterTables(global.G_DB)	//初始化表
+	global.G_VIPER = core.Viper()    //初始化Viper,载入配置文件
+	global.G_LOG = core.Zap()        // 初始化zap日志库
+	zap.ReplaceGlobals(global.G_LOG) //将zap提供的Logger and SugaredLogger替换为Logger
+	global.G_DB = initialize.Gorm()  //gorm连接数据库
+	initialize.Timer()               //定时任务管理器是在全局变量配置中初始化的，所以这里仅仅是开启了删除表的定时任务
+	if global.G_DB != nil {          //若成功连接数据库
+
+		initialize.RegisterTables(global.G_DB) //初始化表
 		//程序结束前关闭数据库连接。所以我们需要DB()获取sql.DB
-		sqldb,_ := global.G_DB.DB()
+		sqldb, _ := global.G_DB.DB()
 		defer sqldb.Close()
 	}
 
 	//初始化redis服务
 	//使用redis或使用多点登录
-	if global.G_CONFIG.System.UseRedis || global.G_CONFIG.System.UseMultipoint{
+	if global.G_CONFIG.System.UseRedis || global.G_CONFIG.System.UseMultipoint {
 		initialize.Redis()
 	}
 	//加载黑名单
@@ -43,5 +47,3 @@ func main() {
 	Router.Run(":8888")
 
 }
-
-

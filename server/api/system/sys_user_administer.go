@@ -8,7 +8,9 @@ import (
 )
 
 func UserInformation(c *gin.Context) {
-	all, err := userService.QueryUserAll()
+	page := c.Query("page")
+	offset := c.Query("offset")
+	all, err := userService.QueryUserAll(page, offset)
 	if err != nil {
 		global.G_LOG.Error("接口:UserInformation,获取用户所有数据失败,error:" + err.Error())
 		response.FailWithMessage("查询数据失败", c)

@@ -4,6 +4,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
 	"go.uber.org/zap"
+	"strconv"
 )
 
 type DistrictService struct{}
@@ -60,4 +61,21 @@ func (DistrictService *DistrictService) InitDistrict() {
 		}
 	}
 	return
+}
+
+func (d *DistrictService) QueryDistrictLimit(page, offset string) ([]system.District, error) {
+	i, _ := strconv.Atoi(page)
+	o, _ := strconv.Atoi(offset)
+	var dis []system.District
+	err := global.G_DB.Model(system.District{}).Offset((o - 1) * i).Limit(i).Find(&dis).Error
+
+	return dis, err
+}
+
+func (d *DistrictService) UpdateDistrict(dis system.District) error {
+	return global.G_DB.Model(system.District{}).Where("id = ?", dis.Id).Update("district_name", dis.DistrictName).Error
+}
+
+func (d *DistrictService) DeleteDistrict(id uint) error {
+	return global.G_DB.Model(system.District{}).Where("id = ?", id).Delete(system.District{}, id).Error
 }
