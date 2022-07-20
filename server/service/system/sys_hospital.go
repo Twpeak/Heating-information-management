@@ -8,8 +8,6 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system/response"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
-	"strconv"
-	"strings"
 )
 
 type HospitalService struct{}
@@ -51,18 +49,6 @@ func (h *HospitalService) GetHospitalsVo(pageInfo reqCom.PageInfo) (voDate []res
 		Joins("left join districts on districts.id = hospitals.district_id").
 		Joins("left join sys_users on sys_users.id = hospitals.boos_id").
 		Scan(&voDate).Count(&total).Error; err != nil {
-		global.G_LOG.Error("链表查询医院信息VO数据失败", zap.Error(err))
-		return
-	}
-	return
-}
-
-//查询医院信息和负责人信息视图，不分页
-func (h *HospitalService) getHospitalsVo() (voDate []response.HospitalVo,  err error) {
-	if err = global.G_DB.Model(&system.Hospital{}).Select("hospitals.*,districts.district_name,sys_users.*").
-		Joins("left join districts on districts.id = hospitals.district_id").
-		Joins("left join sys_users on sys_users.id = hospitals.boos_id").
-		Scan(&voDate).Error; err != nil {
 		global.G_LOG.Error("链表查询医院信息VO数据失败", zap.Error(err))
 		return
 	}
@@ -141,7 +127,7 @@ func (h *HospitalService) AddHospital(Hospital system.Hospital) (err error) {
 func (h *HospitalService) UpdateHospitalAndBoss(HospitalAndBoss request.HospitalAndBoss) (err error) {
 	//修改医院信息
 	hospital :=  &system.Hospital{
-		Model: 			gorm.Model{ID: HospitalAndBoss.ID},
+		//Model: 			gorm.Model{ID: HospitalAndBoss.ID},
 		HospitalName: 	HospitalAndBoss.HospitalName,
 		Code: 			HospitalAndBoss.Code,
 		Address: 		HospitalAndBoss.Address,
@@ -156,13 +142,13 @@ func (h *HospitalService) UpdateHospitalAndBoss(HospitalAndBoss request.Hospital
 		RoleId: 	3,
 	}
 	if err = global.G_DB.Transaction(func(tx *gorm.DB) error {
-		if err = tx.Model(&system.Hospital{}).Updates(hospital).Error; err != nil {
+		if err = tx.Model(&system.Hospital{}).Where("id = ?",HospitalAndBoss.ID).Updates(hospital).Error; err != nil {
 			global.G_LOG.Error("修改医院信息失败", zap.Error(err))
 			return err
 		}
 		boss.HospitalId = hospital.ID
-		boss.ID = hospital.BoosId
-		if err = tx.Model(&system.SysUser{}).Updates(boss).Error; err != nil {
+		//boss.ID = hospital.BoosId
+		if err = tx.Model(&system.SysUser{}).Where("id = ?",hospital.BoosId).Updates(boss).Error; err != nil {
 			global.G_LOG.Error("修改管理者信息失败", zap.Error(err))
 			return err
 		}
@@ -239,39 +225,52 @@ func (h *HospitalService) GetHospitalByKey(req request.KeyReq) (hos []response.H
 	limit := req.PageSize
 	offset := req.PageSize * (req.Page - 1)
 	key := req.Key
-	vo, _ := h.getHospitalsVo()
-	for _,Item := range vo{
-		switch  {
-		case strings.Contains(strconv.Itoa(int(Item.ID)),key):
-			hos = append(hos,Item)
-			total++
-		case strings.Contains(Item.HospitalName,key):
-			hos = append(hos,Item)
-			total++
-		case strings.Contains(Item.Code,key):
-			hos = append(hos,Item)
-			total++
-		case strings.Contains(Item.Address,key):
-			hos = append(hos,Item)
-			total++
-		case strings.Contains(Item.Username,key):
-			hos = append(hos,Item)
-			total++
-		case strings.Contains(Item.IdentityCard,key):
-			hos = append(hos,Item)
-			total++
-		case strings.Contains(Item.Phone,key):
-			hos = append(hos,Item)
-			total++
-		case strings.Contains(Item.DistrictName,key):
-			hos = append(hos,Item)
-			total++
+
+	if err = global.G_DB.Table("hospitals h").Limit(limit).Offset(offset).
+		Select("h.*,d.district_name,u.*").
+		Joins("left join districts d on d.id = h.district_id").
+		Joins("left join sys_users u on u.id = h.boos_id").
+		Where("d.district_name like ?","%" + key + "%").
+		Or("h.id like ?","%" + key + "%").
+		Or("h.hospital_name like ?","%" + key + "%").
+		Or("h.code like ?","%" + key + "%").
+		Or("h.address like ?","%" + key + "%").
+		Or("u.username like ?","%" + key + "%").
+		Or("u.phone like ?","%" + key + "%").
+		Or("u.identity_card like ?","%" + key + "%").
+		Scan(&hos).Count(&total).Error; err != nil {
+			global.G_LOG.Error("链表查询医院信息VO数据失败", zap.Error(err))
+			return
 		}
-	}
-	if len(hos)<limit {
-		return hos,total,err
-	}
-	return hos[offset:offset+limit], total,err
+	//for _,Item := range vo{
+	//	switch  {
+	//	case strings.Contains(strconv.Itoa(int(Item.ID)),key):
+	//		hos = append(hos,Item)
+	//		total++
+	//	case strings.Contains(Item.HospitalName,key):
+	//		hos = append(hos,Item)
+	//		total++
+	//	case strings.Contains(Item.Code,key):
+	//		hos = append(hos,Item)
+	//		total++
+	//	case strings.Contains(Item.Address,key):
+	//		hos = append(hos,Item)
+	//		total++
+	//	case strings.Contains(Item.Username,key):
+	//		hos = append(hos,Item)
+	//		total++
+	//	case strings.Contains(Item.IdentityCard,key):
+	//		hos = append(hos,Item)
+	//		total++
+	//	case strings.Contains(Item.Phone,key):
+	//		hos = append(hos,Item)
+	//		total++
+	//	case strings.Contains(Item.DistrictName,key):
+	//		hos = append(hos,Item)
+	//		total++
+	//	}
+	//}
+	return hos, total,err
 }
 
 

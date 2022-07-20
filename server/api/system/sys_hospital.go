@@ -184,11 +184,11 @@ func (h *HospitalApi) UpdateHospitalAndBoss(c *gin.Context) {
 	}
 	//添加
 	if err := hospitalService.UpdateHospitalAndBoss(hospitalAndBoss); err != nil {
-		global.G_LOG.Error("添加医院信息失败", zap.Error(err))
-		response.FailWithMessage("添加医院信息失败", c)
+		global.G_LOG.Error("修改医院信息失败", zap.Error(err))
+		response.FailWithMessage("修改医院信息失败", c)
 		return
 	}
-	response.OkWithMessage("添加成功", c)
+	response.OkWithMessage("修改成功", c)
 
 
 }
