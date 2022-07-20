@@ -147,7 +147,7 @@ func (h *HospitalApi) UpdateBossByHospital(c *gin.Context) {
 	response.OkWithMessage("修改成功", c)
 }
 
-//修改医院信息
+//修改医院信息（包括更换负责人）
 func (h *HospitalApi) UpdateHospital(c *gin.Context) {
 	var hospitalDate system.Hospital
 	if err := c.ShouldBindJSON(&hospitalDate); err != nil {
@@ -169,7 +169,26 @@ func (h *HospitalApi) UpdateHospital(c *gin.Context) {
 
 }
 
-//添加医院信息同时添加负责人信息
+//修改医院信息（同时修改负责人信息）
+func (h *HospitalApi) UpdateHospitalAndBoss(c *gin.Context) {
+	//取参
+	var hospitalAndBoss request.HospitalAndBoss
+	if err := c.ShouldBindJSON(&hospitalAndBoss); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	//添加
+	if err := hospitalService.UpdateHospitalAndBoss(hospitalAndBoss); err != nil {
+		global.G_LOG.Error("添加医院信息失败", zap.Error(err))
+		response.FailWithMessage("添加医院信息失败", c)
+		return
+	}
+	response.OkWithMessage("添加成功", c)
+
+
+}
+
+//添加医院信息
 func (h *HospitalApi) AddHospital(c *gin.Context) {
 	var hospitalDate system.Hospital
 	if err := c.ShouldBindJSON(&hospitalDate); err != nil {
@@ -188,7 +207,22 @@ func (h *HospitalApi) AddHospital(c *gin.Context) {
 		return
 	}
 	response.OkWithMessage("添加成功", c)
+}
 
+//添加医院信息同时添加负责人信息
+func (h *HospitalApi) AddHospitalAndBoss(c *gin.Context) {
+	var hospitalAndBoss request.HospitalAndBoss
+	if err := c.ShouldBindJSON(&hospitalAndBoss); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	//添加
+	if err := hospitalService.AddHospitalAndBoss(hospitalAndBoss); err != nil {
+		global.G_LOG.Error("添加医院信息失败", zap.Error(err))
+		response.FailWithMessage("添加医院信息失败", c)
+		return
+	}
+	response.OkWithMessage("添加成功", c)
 }
 
 //当前区县内获取医院列表[分页]

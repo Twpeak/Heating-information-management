@@ -25,8 +25,10 @@ func (s *BaseRouter)InitHospitalRouter(Router *gin.RouterGroup) *gin.RouterGroup
 		hospitalRouter.GET("name",hospitalApi.GetHospitalByHospitalName)	//通过关键字查询并分页获取
 		hospitalRouter.DELETE("del",hospitalApi.DelHospital) 			//删除医院将删除其下的所有医生账户
 		hospitalRouter.POST("updateboss",hospitalApi.UpdateBossByHospital)//修改负责人信息
-		hospitalRouter.POST("addhos",hospitalApi.AddHospital)			//添加医院信息
-		hospitalRouter.POST("updatehos",hospitalApi.UpdateHospital)		//修改医院信息（包含负责人）
+		hospitalRouter.POST("addhos",hospitalApi.AddHospital)			//添加医院基本信息
+		hospitalRouter.POST("addHosAndBoss",hospitalApi.AddHospitalAndBoss)	//添加医院信息同时添加管理员信息
+		hospitalRouter.POST("updatehos",hospitalApi.UpdateHospital)		//修改医院信息（更换负责人）
+		hospitalRouter.POST("updatehosAndBoss",hospitalApi.UpdateHospitalAndBoss)//修改医院信息(同时修改负责人信息)
 	}
 	return hospitalRouter
 }

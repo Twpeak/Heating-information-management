@@ -118,13 +118,85 @@ func (h *HospitalService) AddHospital(Hospital system.Hospital) (err error) {
 	return err
 }
 
+//修改医院信息同时修改负责人信息
+func (h *HospitalService) UpdateHospitalAndBoss(HospitalAndBoss request.HospitalAndBoss) (err error) {
+	//修改医院信息
+	hospital :=  &system.Hospital{
+		Model: 			gorm.Model{ID: HospitalAndBoss.ID},
+		HospitalName: 	HospitalAndBoss.HospitalName,
+		Code: 			HospitalAndBoss.Code,
+		Address: 		HospitalAndBoss.Address,
+		DistrictId: 	HospitalAndBoss.DistrictId,
+	}
+	boss := &system.SysUser{
+		Username: 	HospitalAndBoss.Username,
+		Name: 		HospitalAndBoss.Username,
+		Email: 		HospitalAndBoss.Email,
+		Phone: 		HospitalAndBoss.Phone,
+		Password: 	HospitalAndBoss.IdentityCard[len(HospitalAndBoss.IdentityCard) - 6:],
+		RoleId: 	3,
+	}
+	if err = global.G_DB.Transaction(func(tx *gorm.DB) error {
+		if err = tx.Model(&system.Hospital{}).Updates(hospital).Error; err != nil {
+			global.G_LOG.Error("修改医院信息失败", zap.Error(err))
+			return err
+		}
+		boss.HospitalId = hospital.ID
+		boss.ID = hospital.BoosId
+		if err = tx.Model(&system.SysUser{}).Updates(boss).Error; err != nil {
+			global.G_LOG.Error("修改管理者信息失败", zap.Error(err))
+			return err
+		}
+		return nil
+	}); err != nil {
+		global.G_LOG.Error("修改医院事务出现错误，数据回滚", zap.Error(err))
+		return err
+	}
+	return err
+}
+
+//新增医院信息（同时添加管理员信息）
+func (h *HospitalService) AddHospitalAndBoss(HospitalAndBoss request.HospitalAndBoss) (err error) {
+	//添加医院信息
+	hospital :=  &system.Hospital{
+		HospitalName: HospitalAndBoss.HospitalName,
+		Code: HospitalAndBoss.Code,
+		Address: HospitalAndBoss.Address,
+		DistrictId: HospitalAndBoss.DistrictId,
+	}
+	boss := &system.SysUser{
+		Username: HospitalAndBoss.Username,
+		Name: HospitalAndBoss.Username,
+		Email: HospitalAndBoss.Email,
+		Phone: HospitalAndBoss.Phone,
+		Password: HospitalAndBoss.IdentityCard[len(HospitalAndBoss.IdentityCard) - 6:],
+		RoleId: 3,
+	}
+	if err = global.G_DB.Transaction(func(tx *gorm.DB) error {
+		if err = tx.Model(&system.Hospital{}).Create(&hospital).Error; err != nil {
+			global.G_LOG.Error("添加医院信息失败", zap.Error(err))
+			return err
+		}
+		boss.HospitalId = hospital.ID
+		if err = tx.Model(&system.SysUser{}).Create(&boss).Error; err != nil {
+			global.G_LOG.Error("添加管理者信息失败", zap.Error(err))
+			return err
+		}
+		return nil
+	}); err != nil {
+		global.G_LOG.Error("添加医院事务出现错误，数据回滚", zap.Error(err))
+		return err
+	}
+	return err
+}
+
 //查询当前区域所有医院列表【分页】
 func (h *HospitalService) GetHospitalByDistrictLimit(req request.HospitalReq) (hos []system.Hospital,total int64, err error) {
 	limit := req.PageSize
 	offset := req.PageSize * (req.Page - 1)
 	if err = global.G_DB.Limit(limit).Offset(offset).Model(&system.Hospital{}).
 		Where("district_id = ?", req.DistrictId).Find(&hos).Count(&total).Error; err != nil {
-		global.G_LOG.Error("修改医院负责人信息失败", zap.Error(err))
+		global.G_LOG.Error("查询当前区域所有医院列表信息失败", zap.Error(err))
 		return
 	}
 	return
