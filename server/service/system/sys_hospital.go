@@ -57,6 +57,18 @@ func (h *HospitalService) GetHospitalsVo(pageInfo reqCom.PageInfo) (voDate []res
 	return
 }
 
+//查询医院信息和负责人信息视图，不分页
+func (h *HospitalService) getHospitalsVo() (voDate []response.HospitalVo,  err error) {
+	if err = global.G_DB.Model(&system.Hospital{}).Select("hospitals.*,districts.district_name,sys_users.*").
+		Joins("left join districts on districts.id = hospitals.district_id").
+		Joins("left join sys_users on sys_users.id = hospitals.boos_id").
+		Scan(&voDate).Error; err != nil {
+		global.G_LOG.Error("链表查询医院信息VO数据失败", zap.Error(err))
+		return
+	}
+	return
+}
+
 //查询当前医院所有医生
 func (h *HospitalService) GetUserByHospitalId(Hospital request.HospitalReq) (users []response.GetDoctorByHos, err error) {
 	limit := Hospital.PageSize
@@ -227,26 +239,37 @@ func (h *HospitalService) GetHospitalByKey(req request.KeyReq) (hos []response.H
 	limit := req.PageSize
 	offset := req.PageSize * (req.Page - 1)
 	key := req.Key
-	vo,total, _ := h.GetHospitalsVo(req.PageInfo)
+	vo, _ := h.getHospitalsVo()
 	for _,Item := range vo{
 		switch  {
 		case strings.Contains(strconv.Itoa(int(Item.ID)),key):
 			hos = append(hos,Item)
+			total++
 		case strings.Contains(Item.HospitalName,key):
 			hos = append(hos,Item)
+			total++
 		case strings.Contains(Item.Code,key):
 			hos = append(hos,Item)
+			total++
 		case strings.Contains(Item.Address,key):
 			hos = append(hos,Item)
+			total++
 		case strings.Contains(Item.Username,key):
 			hos = append(hos,Item)
+			total++
 		case strings.Contains(Item.IdentityCard,key):
 			hos = append(hos,Item)
+			total++
 		case strings.Contains(Item.Phone,key):
 			hos = append(hos,Item)
+			total++
 		case strings.Contains(Item.DistrictName,key):
 			hos = append(hos,Item)
+			total++
 		}
+	}
+	if len(hos)<limit {
+		return hos,total,err
 	}
 	return hos[offset:offset+limit], total,err
 }

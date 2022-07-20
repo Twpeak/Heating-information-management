@@ -49,7 +49,7 @@ func (h *HospitalApi) GetAllHospital(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	response.OkWithDetailed(hospital,"删除医院信息成功", c)
+	response.OkWithDetailed(hospital,"获取医院信息成功", c)
 }
 
 
