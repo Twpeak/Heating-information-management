@@ -130,14 +130,14 @@ func (userService *UserService) InitUserRole() {
 	return
 }
 
-func (u *UserService) QueryUserAll(page, offset string) (res []dto.UserInformationDto, err error) {
+func (u *UserService) QueryUserAll(page, offset string) (res []dto.UserInformationDto, total int64, err error) {
 	i, _ := strconv.Atoi(page)
 	o, _ := strconv.Atoi(offset)
 
 	err = global.G_DB.Model(&system.SysUser{}).
 		Select("sys_users.id,sys_users.updated_at,sys_users.name,sys_users.username,sys_users.identity_card,sys_users.phone,hospitals.hospital_name").Offset((o - 1) * i).Limit(i).
-		Joins("left join hospitals on sys_users.hospital_id=hospitals.id").Find(&res).Error
-	return res, err
+		Joins("left join hospitals on sys_users.hospital_id=hospitals.id").Find(&res).Count(&total).Error
+	return res, total, err
 }
 
 func (u *UserService) CreateUser(res dto.UserCreateDto) error {
@@ -204,4 +204,13 @@ func (u *UserService) QueryUserByIdPwd(user dto.MyPwdDto) (system.SysUser, error
 func (u *UserService) UpdatePwd(user dto.MyPwdDto) error {
 	err := global.G_DB.Model(&system.SysUser{}).Where("id = ?", user.Id).Updates(system.SysUser{Password: user.Pwd1}).Error
 	return err
+}
+
+func (u *UserService) QueryUserCondition(page, offset, name string) (res []dto.UserInformationDto, total int64, err error) {
+	i, _ := strconv.Atoi(page)
+	o, _ := strconv.Atoi(offset)
+	err = global.G_DB.Model(&system.SysUser{}).Where("sys_users.name LIKE ?", "%"+name+"%").Offset((o - 1) * i).Limit(i).
+		Select("sys_users.id,sys_users.updated_at,sys_users.name,sys_users.username,sys_users.identity_card,sys_users.phone,hospitals.hospital_name").
+		Joins("left join hospitals on sys_users.hospital_id=hospitals.id").Find(&res).Count(&total).Error
+	return res, total, err
 }

@@ -10,13 +10,16 @@ import (
 func UserInformation(c *gin.Context) {
 	page := c.Query("page")
 	offset := c.Query("offset")
-	all, err := userService.QueryUserAll(page, offset)
+	all, total, err := userService.QueryUserAll(page, offset)
 	if err != nil {
 		global.G_LOG.Error("接口:UserInformation,获取用户所有数据失败,error:" + err.Error())
 		response.FailWithMessage("查询数据失败", c)
 		return
 	}
-	response.OkWithData(all, c)
+	response.OkWithData(gin.H{
+		"data":  all,
+		"total": total,
+	}, c)
 }
 
 func UserAdd(c *gin.Context) {
@@ -140,4 +143,19 @@ func MyUpdatePwd(c *gin.Context) {
 	}
 	response.Ok(c)
 
+}
+
+func Query(c *gin.Context) {
+	page := c.Query("page")
+	offset := c.Query("offset")
+	name := c.Query("name")
+	condition, i, err := userService.QueryUserCondition(page, offset, name)
+	if err != nil {
+		global.G_LOG.Error("接口:Query,查询数据失败,error:" + err.Error())
+		return
+	}
+	response.OkWithData(gin.H{
+		"data":  condition,
+		"total": int(i),
+	}, c)
 }

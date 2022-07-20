@@ -67,6 +67,8 @@ func Routers() *gin.Engine {
 		UserRelevant.PUT("/put", system.UserUpdate)
 		//删除用户
 		UserRelevant.DELETE("/del", system.UserDelete)
+		//搜索用户
+		UserRelevant.GET("/que", system.Query)
 	}
 	MyRelevant := Router.Group("/my")
 	{
