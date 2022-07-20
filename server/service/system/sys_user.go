@@ -10,6 +10,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
+	"strconv"
 )
 
 //关于用户的操作逻辑:登录，注册
@@ -129,10 +130,13 @@ func (userService *UserService) InitUserRole() {
 	return
 }
 
-func (u *UserService) QueryUserAll() (res []dto.UserInformationDto, err error) {
+func (u *UserService) QueryUserAll(page, offset string) (res []dto.UserInformationDto, err error) {
+	i, _ := strconv.Atoi(page)
+	o, _ := strconv.Atoi(offset)
+
 	err = global.G_DB.Model(&system.SysUser{}).
-		Select("sys_users.id,sys_users.updated_at,sys_users.name,sys_users.username,sys_users.identity_card,sys_users.phone,hospital.hospital_name").
-		Joins("left join hospital on sys_users.hospital_id=hospital.id").Find(&res).Error
+		Select("sys_users.id,sys_users.updated_at,sys_users.name,sys_users.username,sys_users.identity_card,sys_users.phone,hospitals.hospital_name").Offset((o - 1) * i).Limit(i).
+		Joins("left join hospitals on sys_users.hospital_id=hospitals.id").Find(&res).Error
 	return res, err
 }
 
