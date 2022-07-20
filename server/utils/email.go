@@ -1,23 +1,31 @@
 package utils
 
 import (
+	"bytes"
 	"crypto/tls"
 	"fmt"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/jordan-wright/email"
 	"net/smtp"
 	"strings"
-
 )
+
+
+//自定义邮件模板发送方法
+func EmailSendHtml(To string,subject string, body bytes.Buffer) error {
+	to := strings.Split(To, ",")
+	return send(to, subject, body.String())
+}
+
 
 //@function: Email
 //@description: Email发送方法
 //@param: subject string, body string
 //@return: error
 
-func Email(to []string, subject string, body string) error {
+func Email(To []string, subject string, body string) error {
 	//to := strings.Split(To, ",")
-	return send(to, subject, body)
+	return send(To, subject, body)
 }
 
 //@function: ErrorToEmail
