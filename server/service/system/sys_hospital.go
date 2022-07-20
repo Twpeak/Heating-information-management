@@ -47,7 +47,7 @@ func (h *HospitalService) GetDistrictByDistrictId(id uint) (dis system.District,
 func (h *HospitalService) GetHospitalsVo(pageInfo reqCom.PageInfo) (voDate []response.HospitalVo,total int64,  err error) {
 	limit := pageInfo.PageSize
 	offset := pageInfo.PageSize * (pageInfo.Page - 1)
-	if err = global.G_DB.Model(&system.Hospital{}).Limit(limit).Offset(offset).Debug().Select("hospitals.*,districts.district_name,sys_users.*").
+	if err = global.G_DB.Model(&system.Hospital{}).Limit(limit).Offset(offset).Select("hospitals.*,districts.district_name,sys_users.*").
 		Joins("left join districts on districts.id = hospitals.district_id").
 		Joins("left join sys_users on sys_users.id = hospitals.boos_id").
 		Scan(&voDate).Count(&total).Error; err != nil {
@@ -58,9 +58,16 @@ func (h *HospitalService) GetHospitalsVo(pageInfo reqCom.PageInfo) (voDate []res
 }
 
 //查询当前医院所有医生
-func (h *HospitalService) GetUserByHospitalId(Hospital request.HospitalReq) (users []system.SysUser, err error) {
+func (h *HospitalService) GetUserByHospitalId(Hospital request.HospitalReq) (users []response.GetDoctorByHos, err error) {
+	limit := Hospital.PageSize
+	offset := Hospital.PageSize * (Hospital.Page - 1)
 	HospitalId := Hospital.HospitalId
-	if err = global.G_DB.Model(system.SysUser{}).Where("hospital_id = ?", HospitalId).Find(&users).Error; err != nil {
+	if err = global.G_DB.Table("sys_users u").Limit(limit).Offset(offset).
+		Select("u.id,u.identity_card,u.phone,u.email,u.name,h.hospital_name").
+		Joins("left join hospitals h on u.hospital_id = h.id").
+		Where("hospital_id = ?", HospitalId).
+		Scan(&users).Error;
+	err != nil {
 		global.G_LOG.Error("查询当前医院所有医生失败", zap.Error(err))
 		return users, err
 	}

@@ -80,11 +80,16 @@ func (h *HospitalApi) GetAllBossId(c *gin.Context) {
 	response.OkWithData(ids, c)
 }
 
-//通过医院查询当前医院的所有医生
+//通过医院查询当前医院的所有医生[分页]
 func (h *HospitalApi) GetUserByHospitalId(c *gin.Context) {
 	//取参
 	var req request.HospitalReq
 	if err := c.ShouldBindQuery(&req); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	//校验
+	if err := utils.Verify(req.PageInfo, utils.PageInfoVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}

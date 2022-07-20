@@ -17,7 +17,7 @@ func (s *BaseRouter)InitHospitalRouter(Router *gin.RouterGroup) *gin.RouterGroup
 		//新增医院时，先新增医院基本信息，再添加负责人（注册用户），通过新增用户Id去修改负责人信息
 		hospitalRouter.GET("all",hospitalApi.GetAllHospital)				//查询所有医院信息
 		hospitalRouter.GET("Boss",hospitalApi.GetBossByBossId)			//查询医院负责人信息
-		hospitalRouter.GET("hosBoss",hospitalApi.GetHospitalAndBoss)			//查询医院信息和负责人信息，返回vo
+		hospitalRouter.GET("hosBoss",hospitalApi.GetHospitalAndBoss)		//查询医院信息和负责人信息，返回vo
 		hospitalRouter.GET("allbossId",hospitalApi.GetAllBossId)			//获取所有医院负责人Id列表
 		hospitalRouter.GET("getdoc",hospitalApi.GetUserByHospitalId)		//通过医院查询当前医院的所有医生
 		hospitalRouter.GET("hosbydis",hospitalApi.GetHospitalByDistrictLimit)//当前区县内分页获取医院列表
