@@ -1,0 +1,95 @@
+mysql:
+  path: '47.95.13.13'
+  port: '3307'
+  config: 'charset=utf8mb4&parseTime=True&loc=Local'
+  db-name: 'db_fever_information'
+  username: 'root'
+  password: 'whp666946.'
+  max-idle-conns: 10
+  max-open-conns: 100
+  log-mode: ""
+  log-zap: false
+
+zap:
+  level: 'info'
+  format: 'console'
+  prefix: '[association]'
+  director: 'log'
+  show-line: true
+  encode-level: 'LowercaseColorLevelEncoder'
+  stacktrace-key: ' stacktrace'
+  log-in-console: true
+
+redis:
+  db: 0
+  addr: '43.142.32.67:6379'
+  password: '56994902'
+
+jwt:
+  signing-key: 'Twpeak'
+  expires-time: 604800
+  buffer-time: 86400
+  issuer: 'Twpeak'
+
+casbin:
+  model-path: './resource/rbac_model.conf'
+
+#system:
+#  ip2location_path: './server/IP2LOCATION-LITE-DB5.IPV6.BIN'
+#  page_size: '5'
+
+system:
+  addr: 8888
+  db-type: mysql
+  oss-type: local
+  use-multipoint: true
+  use-redis: true
+
+local:
+  path: /StoreFile
+  store-path: ./server/resource/StoreFile
+  static: /static
+  static-path: ./server/resource/Static
+
+timer:
+  detail:
+    - tableName: jwt_blacklists
+      compareField: created_at
+      interval: 168h
+      baseTaskParameter:
+        taskName: ClearDB
+        start: true
+        spec: '@daily'
+  emailTask:
+    baseTaskParameter:
+      spec: '@weekly'
+      start: true
+      taskName: emailTask
+
+email:
+  to: 2914075814@qq.com
+  port: 25
+  from: 2914075814@qq.com
+  host: smtp.qq.com
+  is-ssl: false
+  secret: esmadhutaetgdhff
+  nickname: test
+
+captcha:
+  store-redis: false
+  img-width: 240
+  img-height: 80
+  max-skwe: 0.7
+  dot-count: 80
+  noise-count: 10
+  length: 6
+  show-line-options: 2
+  source: "Twpeak中国制质智造123456789"
+  bgcolor: {R: 255,G: 255,B: 0,A: 255}
+#  fonts: ["hanzione.ttf","hanzitwo.ttf"]
+  fonts: nil
+  language: [ "en","ja","ru","zh" ]
+
+excel:
+  dir: ./server/resource/excel/
+  
