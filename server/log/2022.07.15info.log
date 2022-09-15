@@ -1,3 +1,0 @@
-{"level":"\u001b[34minfo\u001b[0m","time":"[association]2022/07/15 - 08:42:39.843","caller":"D:/GO/WorkSpace/new/fever_information/server/initialize/gorm.go:47","message":"register table success"}
-{"level":"\u001b[34minfo\u001b[0m","time":"[association]2022/07/15 - 08:43:24.629","caller":"D:/GO/WorkSpace/new/fever_information/server/initialize/gorm.go:47","message":"register table success"}
-{"level":"\u001b[34minfo\u001b[0m","time":"[association]2022/07/15 - 08:43:24.632","caller":"D:/GO/WorkSpace/new/fever_information/server/initialize/redis.go:25","message":"redis connect ping response:","pong":"PONG"}
