@@ -1,0 +1,3 @@
+{"level":"\u001b[31merror\u001b[0m","time":"[association]2022/07/15 - 08:42:39.850","caller":"D:/GO/WorkSpace/new/fever_information/server/initialize/redis.go:22","message":"redis connet ping failed ,err :","error":"NOAUTH Authentication required."}
+{"level":"\u001b[31merror\u001b[0m","time":"[association]2022/07/15 - 08:43:25.192","caller":"D:/GO/WorkSpace/new/fever_information/server/service/system/sys_user.go:117","message":"角色数据初始化失败","error":"Error 1062: Duplicate entry '2' for key 'sys_Roles.PRIMARY'"}
+{"level":"\u001b[31merror\u001b[0m","time":"[association]2022/07/15 - 08:43:25.514","caller":"D:/GO/WorkSpace/new/fever_information/server/service/system/sys_district.go:58","message":"分类数据初始化失败","error":"Error 1062: Duplicate entry '2' for key 'districts.PRIMARY'"}
