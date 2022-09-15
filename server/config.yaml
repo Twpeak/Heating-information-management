@@ -1,10 +1,10 @@
 mysql:
-  path: '47.95.13.13'
+  path: 'xxxxx'
   port: '3307'
   config: 'charset=utf8mb4&parseTime=True&loc=Local'
   db-name: 'db_fever_information'
   username: 'root'
-  password: 'whp666946.'
+  password: 'xxxxx.'
   max-idle-conns: 10
   max-open-conns: 100
   log-mode: ""
@@ -22,8 +22,8 @@ zap:
 
 redis:
   db: 0
-  addr: '43.142.32.67:6379'
-  password: '56994902'
+  addr: 'xxxxxx'
+  password: 'xxxxx'
 
 jwt:
   signing-key: 'Twpeak'
@@ -67,9 +67,9 @@ timer:
       taskName: emailTask
 
 email:
-  to: 2914075814@qq.com
+  to: xxxxx@qq.com
   port: 25
-  from: 2914075814@qq.com
+  from: xxxxxx@qq.com
   host: smtp.qq.com
   is-ssl: false
   secret: esmadhutaetgdhff
