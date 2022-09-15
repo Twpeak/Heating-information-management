@@ -8,7 +8,6 @@ import (
 type RouterGroups struct {
 	System 	system.RouterGroup
 	Example example.RouterGroup
-
 }
 
 var RouterGroupsApp = new(RouterGroups)

@@ -2,7 +2,7 @@ package response
 
 //返回医院信息 vo返回体   医院信息  + 负责人 + 县区
 type HospitalVo struct {
-	ID        uint `gorm:"primarykey"`
+	ID        					uint `gorm:"primarykey"`
 	//企业名称
 	HospitalName string 		`json:"hospital_name" gorm:"comment:企业名称;"`
 	//社会信用代码
